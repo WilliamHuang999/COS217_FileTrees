@@ -121,7 +121,7 @@ the error manifests itself or is "noticed" by the client.
 ===============================================================
          ./bdtBad1        BDT_insert()
 ---------------------------------------------------------------
-         ./bdtBad2        BDT_rm(const char *pcPath)
+         ./bdtBad2        BDT_freeSubtree(struct node *psNode)
 ---------------------------------------------------------------
          ./bdtBad3        BDT_addChild(struct node *psParent,
 	                                struct node *psChild)
