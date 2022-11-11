@@ -121,7 +121,8 @@ the error manifests itself or is "noticed" by the client.
 ---------------------------------------------------------------
          ./bdtBad2        BDT_rm(const char *pcPath)
 ---------------------------------------------------------------
-         ./bdtBad3        
+         ./bdtBad3        BDT_addChild(struct node *psParent,
+	                                struct node *psChild)
 ---------------------------------------------------------------
          ./bdtBad4        
 ---------------------------------------------------------------
