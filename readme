@@ -126,7 +126,8 @@ the error manifests itself or is "noticed" by the client.
          ./bdtBad3        BDT_addChild(struct node *psParent,
 	                                struct node *psChild)
 ---------------------------------------------------------------
-         ./bdtBad4        
+         ./bdtBad4        BDT_strlenAccumulate(struct node *psNode,
+	                                            size_t *pulAcc)
 ---------------------------------------------------------------
          ./bdtBad5        
 ===============================================================
