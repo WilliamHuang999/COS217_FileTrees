@@ -66,8 +66,8 @@ Was it fun?
 Student 2: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-A lot of work but useful for learning how to understand existing
-codebase.
+A lot of work but useful for learning how to understand and edit
+existing codebase
 
 
 ------------------------------------------------------------------------
@@ -126,7 +126,8 @@ the error manifests itself or is "noticed" by the client.
          ./bdtBad3        BDT_addChild(struct node *psParent,
 	                                struct node *psChild)
 ---------------------------------------------------------------
-         ./bdtBad4        
+         ./bdtBad4        BDT_strlenAccumulate(struct node *psNode,
+	                                            size_t *pulAcc)
 ---------------------------------------------------------------
          ./bdtBad5        
 ===============================================================
