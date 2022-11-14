@@ -121,15 +121,13 @@ the error manifests itself or is "noticed" by the client.
 ===============================================================
          ./bdtBad1        BDT_insert()
 ---------------------------------------------------------------
-         ./bdtBad2        BDT_freeSubtree(struct node *psNode)
+         ./bdtBad2        BDT_freeSubtree()
 ---------------------------------------------------------------
-         ./bdtBad3        BDT_addChild(struct node *psParent,
-	                                struct node *psChild)
+         ./bdtBad3        BDT_addChild()
 ---------------------------------------------------------------
-         ./bdtBad4        BDT_strlenAccumulate(struct node *psNode,
-	                                            size_t *pulAcc)
+         ./bdtBad4        BDT_strlenAccumulate()
 ---------------------------------------------------------------
-         ./bdtBad5        
+         ./bdtBad5        BDT_findNode()
 ===============================================================
 
 ------------------------------------------------------------------------
