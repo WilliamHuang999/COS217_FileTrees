@@ -92,7 +92,36 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
       }
    }
 
+   /* Invariant: if DT not initialized, root node should be NULL. */
+   if(!bIsInitialized) {
+      if (oNRoot != NULL) {
+         fprintf(stderr, 
+         "Not initialized, but root node is not NULL\n");
+         return FALSE;
+      }
+   }
+
+   /* Invariant: if oNRoot is NULL, DT count should be 0. */
+   if (oNRoot == NULL) {
+      if (ulCount != 0) {
+         fprintf(stderr, "Root node is NULL, but count is not 0\n");
+         return FALSE;
+      }
+   }
+
+   /* Invariant: if oNRoot is not NULL, DT count should not be 0. */
+   if (oNRoot != NULL) {
+      if (ulCount == 0) {
+         fprintf(stderr, "Root node is not NULL, but count is 0\n");
+         return FALSE;
+      }
+   }
    
+   /* Invariant: number of nodes in DT should match count. */
+   if (Node_getNumChildren(oNRoot) + 1 != ulCount) {
+      fprintf(stderr, "Number of nodes in DT and count do not match\n");
+      return FALSE;
+   }
 
    /* Now checks invariants recursively at each node from the root. */
    return CheckerDT_treeCheck(oNRoot);
