@@ -117,12 +117,6 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
       }
    }
    
-   /* Invariant: number of nodes in DT should match count. */
-   if (Node_getNumChildren(oNRoot) + 1 != ulCount) {
-      fprintf(stderr, "Number of nodes in DT and count do not match\n");
-      return FALSE;
-   }
-
    /* Now checks invariants recursively at each node from the root. */
    return CheckerDT_treeCheck(oNRoot);
 }
