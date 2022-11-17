@@ -37,6 +37,10 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       }
    }
 
+   /* I THINK THIS INVARIANT WILL SOLVE DTBAD2 */
+   /* Invariant: two nodes cannot have the same absolute path */
+   /* int Path_comparePath(Path_T oPPath1, Path_T oPPath2); */
+
    return TRUE;
 }
 
@@ -116,7 +120,7 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
          return FALSE;
       }
    }
-   
+
    /* Now checks invariants recursively at each node from the root. */
    return CheckerDT_treeCheck(oNRoot);
 }
