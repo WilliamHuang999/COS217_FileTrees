@@ -12,9 +12,9 @@
 
 /* see checkerDT.h for specification */
 boolean CheckerDT_Node_isValid(Node_T oNNode) {
-   Node_T oNParent;
-   Path_T oPNPath;
-   Path_T oPPPath;
+   Node_T oNParent;  /* Parent of oNNode */
+   Path_T oPNPath;   /* Path of oNNode */
+   Path_T oPPPath;   /* Path of parent node */
 
    /* Sample check: a NULL pointer is not a valid node */
    if(oNNode == NULL) {
