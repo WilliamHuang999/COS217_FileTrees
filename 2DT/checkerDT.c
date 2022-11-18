@@ -82,10 +82,10 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
          }
 
          oPChildPath = Node_getPath(oNChild);
-         if (Path_comparePath(oPNodePath, oPChildPath == 0)) {
+         if (Path_comparePath(oPNodePath, oPChildPath) == 0) {
             fprintf(stderr, "Two nodes have same absolute path.");
             return FALSE;
-         }         
+         }
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
