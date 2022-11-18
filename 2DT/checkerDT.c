@@ -132,7 +132,6 @@ static size_t CheckerDT_treeCheck(Node_T oNNode,size_t count) {
             getChild returns\n");
             return (size_t)0;
          }
-         count++;
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
@@ -185,7 +184,7 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
 
    /* Now checks invariants recursively at each node from the root. */
    /* Checks if the count matches recorded ulCount of DT */
-   if (CheckerDT_treeCheck(oNRoot,0) != ulCount) {
+   if (CheckerDT_treeCheck(oNRoot,(size_t)0) != ulCount) {
       fprintf(stderr, "Counts don't match\n.");
       return FALSE;
    }
