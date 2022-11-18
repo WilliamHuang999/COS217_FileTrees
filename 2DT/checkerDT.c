@@ -80,13 +80,12 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
             return FALSE;
          }
       }
+   }
 
    /* I THINK THIS INVARIANT WILL SOLVE DTBAD3 */
    /* Invariant: children should be in lexicographic order */
-   /* check if children of this node are in lexicographic order */   
-
-   return TRUE;
-   }
+   /* check if children of this node are in lexicographic order */
+   return TRUE; 
 }
 
 
