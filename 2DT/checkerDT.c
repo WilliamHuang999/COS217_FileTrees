@@ -90,9 +90,6 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
             fprintf(stderr, "out of order lol\n");
             return FALSE;
          }
-
-
-         int Path_comparePath(Path_T oPPath1, Path_T oPPath2);
       }
    }
 
