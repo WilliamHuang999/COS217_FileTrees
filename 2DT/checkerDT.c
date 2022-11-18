@@ -49,7 +49,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    /* int Path_comparePath(Path_T oPPath1, Path_T oPPath2); */
 
    oPNPath = Node_getPath(oNNode);
-   for(i = 0; i < Node_getNumChildren(oNNode)-1; i++) {
+   for(i = 0; i < Node_getNumChildren(oNNode); i++) {
       oNChild1 = NULL;
       iStatus = Node_getChild(oNNode, i, &oNChild1);
 
@@ -64,7 +64,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
          return FALSE;
       }
 
-      for (j = i; j < Node_getNumChildren(oNNode); j++) {
+      for (j = i + 1; j < Node_getNumChildren(oNNode); j++) {
 
          oNChild2 = NULL;
          iStatus = Node_getChild(oNNode,j,&oNChild2);
