@@ -119,7 +119,7 @@ static size_t CheckerDT_treeCheck(Node_T oNNode,size_t count) {
       /* Sample check on each node: node must be valid */
       /* If not, pass that failure back up immediately */
       if(!CheckerDT_Node_isValid(oNNode))
-         return 0;
+         return (size_t)0;
 
       /* Recur on every child of oNNode */
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
@@ -130,7 +130,7 @@ static size_t CheckerDT_treeCheck(Node_T oNNode,size_t count) {
          if(iStatus != SUCCESS) {
             fprintf(stderr,"getNumChildren claims more children than \
             getChild returns\n");
-            return 0;
+            return (size_t)0;
          }
          count++;
 
@@ -138,7 +138,7 @@ static size_t CheckerDT_treeCheck(Node_T oNNode,size_t count) {
             farther down, passes the failure back up immediately */
          count = CheckerDT_treeCheck(oNChild,count);
          if (!count) {
-            return 0;
+            return (size_t)0;
          }
       }
    }
@@ -185,7 +185,7 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
 
    /* Now checks invariants recursively at each node from the root. */
    /* Checks if the count matches recorded ulCount of DT */
-   if (checkerDT_treeCheck(oNRoot,0) != ulCount) {
+   if (CheckerDT_treeCheck(oNRoot,0) != ulCount) {
       return FALSE;
    }
    return TRUE;
