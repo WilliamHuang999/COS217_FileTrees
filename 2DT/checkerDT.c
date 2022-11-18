@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* checkerDT.c                                                        */
-/* Author:                                                            */
+/* Author: Will Huang and George Tziampazis                           */
 /*--------------------------------------------------------------------*/
 
 #include <assert.h>
@@ -51,7 +51,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       oNChild1 = NULL;
       iStatus = Node_getChild(oNNode, i, &oNChild1);
       if(iStatus != SUCCESS) {
-         fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+         fprintf(stderr, "getNumChildren claims more children than \
+getChild returns\n");
          return FALSE;
       }
       oPChildPath1 = Node_getPath(oNChild1);
@@ -103,22 +104,20 @@ Child: (%s). Child: (%s)\n",
 
 /*
    Performs a pre-order traversal of the tree rooted at oNNode.
-   Returns FALSE if a broken invariant is found and
-   returns TRUE otherwise.
-
-   You may want to change this function's return type or
-   parameter list to facilitate constructing your checks.
-   If you do, you should update this function comment.
+   Takes size_t nodeCount representing the "position" of the current
+   node. Increments count to go to the next node recursively.
+   Returns current count or 0 (FALSE) if broken invariant is found.
 */
-static boolean CheckerDT_treeCheck(Node_T oNNode) {
+static size_t CheckerDT_treeCheck(Node_T oNNode,size_t nodeCount) {
    size_t ulIndex;
 
    if(oNNode!= NULL) {
+      nodeCount++;    /* Increment the count of number of nodes */
 
       /* Sample check on each node: node must be valid */
       /* If not, pass that failure back up immediately */
       if(!CheckerDT_Node_isValid(oNNode))
-         return FALSE;
+         return (size_t)0;
 
       /* Recur on every child of oNNode */
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
@@ -129,21 +128,26 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
          if(iStatus != SUCCESS) {
             fprintf(stderr,"getNumChildren claims more children than \
             getChild returns\n");
-            return FALSE;
+            return (size_t)0;
          }
 
-         /* if recurring down one subtree results in a failed check
-            farther down, passes the failure back up immediately */
-         if(!CheckerDT_treeCheck(oNChild))
-            return FALSE;
+         /* Recur down subtree and keep track of number of nodes
+         recurred. */
+         nodeCount = CheckerDT_treeCheck(oNChild,nodeCount);
+         /* If nodeCount is 0, a broken invariant was found in a
+          subtree*/
+         if (!nodeCount) {
+            return (size_t)0;
+         }
       }
    }
-   return TRUE;
+   return nodeCount;
 }
 
 /* see checkerDT.h for specification */
 boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
                           size_t ulCount) {
+   size_t nodeCount;
 
    /* Sample check on a top-level data structure invariant:
       if the DT is not initialized, its count should be 0. */
@@ -179,6 +183,16 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
       }
    }
 
-   /* Now checks invariants recursively at each node from the root. */
-   return CheckerDT_treeCheck(oNRoot);
+   /* Checks invariants recursively at each node from the root. */
+   /* dtBad4 invariant: checks if number of nodes counted matchees 
+   ulCount of DT */
+   nodeCount = 0;
+   nodeCount = CheckerDT_treeCheck(oNRoot,nodeCount)
+   if (nodeCount != ulCount) {
+      fprintf(stderr, "ulCount does not match actual number \
+of nodes in the DT. ulCount = %ld. \
+Number of nodes counted: %ld.\n",ulCount,nodeCount);
+      return FALSE;
+   }
+   return TRUE;
 }
