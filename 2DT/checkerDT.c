@@ -37,7 +37,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       oPPPath = Node_getPath(oNParent);
 
       if(Path_getSharedPrefixDepth(oPNPath, oPPPath) !=
-         Path_getDepth(oPNPath) - 1) {
+      Path_getDepth(oPNPath) - 1) {
          fprintf(stderr, "P-C nodes don't have P-C paths: (%s) (%s)\n",
                  Path_getPathname(oPPPath), Path_getPathname(oPNPath));
          return FALSE;
@@ -49,8 +49,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    /* int Path_comparePath(Path_T oPPath1, Path_T oPPath2); */
 
    oPNPath = Node_getPath(oNNode);
-   for(i = 0; i < Node_getNumChildren(oNNode)-1; i++)
-   {
+   for(i = 0; i < Node_getNumChildren(oNNode)-1; i++) {
       oNChild1 = NULL;
       iStatus = Node_getChild(oNNode, i, &oNChild1);
 
@@ -64,6 +63,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
          fprintf(stderr, "Two nodes have same absolute path.");
          return FALSE;
       }
+
       for (j = i; j < Node_getNumChildren(oNNode); j++) {
 
          oNChild2 = NULL;
@@ -73,6 +73,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
             fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
             return FALSE;
          }
+
          oPChildPath2 = Node_getPath(oNChild2);
          if (Path_comparePath(oPChildPath1,oPChildPath2) == 0) {
             fprintf(stderr, "Two nodes have same absolute path.");
@@ -87,6 +88,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    return TRUE;
    }
 }
+
 
 /*
    Performs a pre-order traversal of the tree rooted at oNNode.
