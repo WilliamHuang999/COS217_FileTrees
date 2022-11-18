@@ -85,12 +85,22 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
          Path_getPathname(oPChildPath1),Path_getPathname(oPChildPath2));
             return FALSE;
          }
+
+         if (!(Path_comparePath(oPChildPath1,oPChildPath2) < 0)) {
+            fprintf(stderr, "out of order lol\n");
+            return FALSE;
+         }
+
+
+         int Path_comparePath(Path_T oPPath1, Path_T oPPath2);
       }
    }
 
-   /* I THINK THIS INVARIANT WILL SOLVE DTBAD3 */
-   /* Invariant: children should be in lexicographic order */
-   /* check if children of this node are in lexicographic order */
+   /* Invariant: children of parent should be in lexicographic order */
+
+
+
+
    return TRUE; 
 }
 
