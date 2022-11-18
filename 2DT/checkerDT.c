@@ -49,18 +49,18 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    /* int Path_comparePath(Path_T oPPath1, Path_T oPPath2); */
 
    oPNPath = Node_getPath(oNNode);
-   for(i = 0; i < Node_getNumChildren(oNNode)-1; i++) {
+   for(i = 0; i < Node_getNumChildren(oNNode); i++) {
       oNChild1 = NULL;
       iStatus = Node_getChild(oNNode, i, &oNChild1);
 
       if(iStatus != SUCCESS) {
-         fprintf(stderr, "getNumChildren claims more children than getChild returns1234\n");
+         fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
          return FALSE;
       }
 
       oPChildPath1 = Node_getPath(oNChild1);
       if (Path_comparePath(oPNPath, oPChildPath1) == 0) {
-         fprintf(stderr, "Two nodes have same absolute path.");
+         fprintf(stderr, "Two nodes have same absolute path.\n");
          return FALSE;
       }
 
@@ -76,7 +76,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 
          oPChildPath2 = Node_getPath(oNChild2);
          if (Path_comparePath(oPChildPath1,oPChildPath2) == 0) {
-            fprintf(stderr, "Two nodes have same absolute path.");
+            fprintf(stderr, "Two nodes have same absolute pathjj.\n");
             return FALSE;
          }
       }
