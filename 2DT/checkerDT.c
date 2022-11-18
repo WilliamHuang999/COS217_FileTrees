@@ -187,7 +187,7 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
    /* dtBad4 invariant: checks if number of nodes counted matchees 
    ulCount of DT */
    nodeCount = 0;
-   nodeCount = CheckerDT_treeCheck(oNRoot,nodeCount)
+   nodeCount = CheckerDT_treeCheck(oNRoot,nodeCount);
    if (nodeCount != ulCount) {
       fprintf(stderr, "ulCount does not match actual number \
 of nodes in the DT. ulCount = %ld. \
