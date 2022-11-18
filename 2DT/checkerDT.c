@@ -49,7 +49,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    /* int Path_comparePath(Path_T oPPath1, Path_T oPPath2); */
 
    oPNPath = Node_getPath(oNNode);
-   for(i = 0; i < Node_getNumChildren(oNNode); i++) {
+   for(i = 0; i < Node_getNumChildren(oNNode)-1; i++) {
       oNChild1 = NULL;
       iStatus = Node_getChild(oNNode, i, &oNChild1);
 
