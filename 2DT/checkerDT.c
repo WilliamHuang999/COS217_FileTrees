@@ -19,6 +19,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    Path_T oPPPath;   /* Path of parent node */
    Path_T oPChildPath1; /* Path of oNChild1 */
    Path_T oPChildPath2; /* Path of oNChild2 */
+   int iStatus;
    /* Indices for looping thru children of oNNode */
    size_t i;
    size_t j;
@@ -50,7 +51,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    /* Iterate thru children of oNNode */
    for(i = 0; i < Node_getNumChildren(oNNode); i++) {
       oNChild1 = NULL;
-      int iStatus = Node_getChild(oNNode, i, &oNChild1);
+      iStatus = Node_getChild(oNNode, i, &oNChild1);
       if(iStatus != SUCCESS) {
          fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
          return FALSE;
