@@ -61,7 +61,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       /* If parent and child have same absolute path. */
       if (Path_comparePath(oPNPath, oPChildPath1) == 0) {
          fprintf(stderr,
-         "Two nodes cannot have the same absolute path. Parent: (%s).\
+         "Two nodes cannot have the same absolute path. Parent: (%s). \
          Child: (%s)\n",
          Path_getPathname(oPNPath),Path_getPathname(oPChildPath1));
          return FALSE;
@@ -80,8 +80,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
          /* If two children of same parent have same absolute path */
          if (Path_comparePath(oPChildPath1,oPChildPath2) == 0) {
          fprintf(stderr,
-         "Two nodes cannot have the same absolute path. Child 1: (%s).\
-         Child 2: (%s)\n",
+         "Two nodes cannot have the same absolute path. Child: (%s). \
+         Child: (%s)\n",
          Path_getPathname(oPChildPath1),Path_getPathname(oPChildPath2));
             return FALSE;
          }
