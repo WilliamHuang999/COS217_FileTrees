@@ -134,6 +134,11 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
-
+Consistency:
+- Argument order in nodeDT.h
+- Argument naming in nodeDT.h
+      - Argument names in Node_compare() should match the convention set
+      in Path_comparePath() in path.h, recommend to change argument
+      names to onNode1 and onNode2.
 
 ------------------------------------------------------------------------
