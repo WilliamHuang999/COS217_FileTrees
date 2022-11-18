@@ -97,10 +97,6 @@ Child: (%s). Child: (%s)\n",
    }
 
    /* Invariant: children of parent should be in lexicographic order */
-
-
-
-
    return TRUE; 
 }
 
