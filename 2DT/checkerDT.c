@@ -13,8 +13,8 @@
 /* see checkerDT.h for specification */
 boolean CheckerDT_Node_isValid(Node_T oNNode) {
    Node_T oNParent;  /* Parent of oNNode */
-   Node_t oNChild1;
-   Node_t oNChild2;
+   Node_T oNChild1;
+   Node_T oNChild2;
    Path_T oPNPath;   /* Path of oNNode */
    Path_T oPPPath;   /* Path of parent node */
    Path_T oPChildPath1;
