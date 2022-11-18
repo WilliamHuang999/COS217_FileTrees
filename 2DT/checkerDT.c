@@ -45,8 +45,6 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       }
    }
 
-   /* Invariant: check two nodes cannot have the same absolute path */
-   /* For dtBad2 */
    oPNPath = Node_getPath(oNNode);
    /* Iterate thru children of oNNode */
    for(i = 0; i < Node_getNumChildren(oNNode); i++) {
@@ -58,7 +56,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
       }
       oPChildPath1 = Node_getPath(oNChild1);
       
-      /* If parent and child have same absolute path. */
+
+      /* dtBad2 invariant: two nodes cannot have same absolute path */
       if (Path_comparePath(oPNPath, oPChildPath1) == 0) {
          fprintf(stderr,
          "Two nodes cannot have the same absolute path. Parent: (%s). \
@@ -77,17 +76,21 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
          }
          oPChildPath2 = Node_getPath(oNChild2);
          
-         /* If two children of same parent have same absolute path */
+         /*dtBad2 invariant: two nodes cannot have same absolute path*/
          if (Path_comparePath(oPChildPath1,oPChildPath2) == 0) {
-         fprintf(stderr,
-         "Two nodes cannot have the same absolute path. Child: (%s). \
-         Child: (%s)\n",
-         Path_getPathname(oPChildPath1),Path_getPathname(oPChildPath2));
+            fprintf(stderr, "Two nodes cannot have same absolute path.\
+            Child: (%s). Child: (%s)\n",
+            Path_getPathname(oPChildPath1),
+            Path_getPathname(oPChildPath2));
             return FALSE;
          }
 
+         /* dtBad3 invariant: children are not in lexicographic order */
          if (!(Path_comparePath(oPChildPath1,oPChildPath2) < 0)) {
-            fprintf(stderr, "out of order lol\n");
+            fprintf(stderr, "Children are not in lexicographic order.\
+            Child: (%s). Child: (%s)\n",
+            Path_getPathname(oPChildPath1),
+            Path_getPathname(oPChildPath2));
             return FALSE;
          }
       }
