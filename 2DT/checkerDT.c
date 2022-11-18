@@ -186,6 +186,7 @@ boolean CheckerDT_isValid(boolean bIsInitialized, Node_T oNRoot,
    /* Now checks invariants recursively at each node from the root. */
    /* Checks if the count matches recorded ulCount of DT */
    if (CheckerDT_treeCheck(oNRoot,0) != ulCount) {
+      fprintf(stderr, "Counts don't match\n.");
       return FALSE;
    }
    return TRUE;
