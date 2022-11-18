@@ -13,8 +13,15 @@
 /* see checkerDT.h for specification */
 boolean CheckerDT_Node_isValid(Node_T oNNode) {
    Node_T oNParent;  /* Parent of oNNode */
+   Node_t oNChild1;
+   Node_t oNChild2;
    Path_T oPNPath;   /* Path of oNNode */
    Path_T oPPPath;   /* Path of parent node */
+   Path_T oPChildPath1;
+   Path_T oPChildPath2;
+   size_t i;
+   size_t j;
+   int iStatus;
 
    /* Sample check: a NULL pointer is not a valid node */
    if(oNNode == NULL) {
@@ -41,11 +48,44 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    /* Invariant: two nodes cannot have the same absolute path */
    /* int Path_comparePath(Path_T oPPath1, Path_T oPPath2); */
 
+   oPNPath = Node_getPath(oNNode);
+   for(i = 0; i < Node_getNumChildren(oNNode)-1; i++)
+   {
+      oNChild1 = NULL;
+      iStatus = Node_getChild(oNNode, i, &oNChild1);
+
+      if(iStatus != SUCCESS) {
+         fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+         return FALSE;
+      }
+
+      oPChildPath1 = Node_getPath(oNChild1);
+      if (Path_comparePath(oPNPath, oPChildPath1) == 0) {
+         fprintf(stderr, "Two nodes have same absolute path.");
+         return FALSE;
+      }
+      for (j = i; j < Node_getNumChildren(oNNode); j++) {
+
+         oNChild2 = NULL;
+         iStatus = Node_getChild(oNNode,j,&oNChild2);
+
+         if (iStatus != SUCCESS) {
+            fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+            return FALSE;
+         }
+         oPChildPath2 = Node_getPath(oNChild2);
+         if (Path_comparePath(oPChildPath1,oPChildPath2) == 0) {
+            fprintf(stderr, "Two nodes have same absolute path.");
+            return FALSE;
+         }
+      }
+
    /* I THINK THIS INVARIANT WILL SOLVE DTBAD3 */
    /* Invariant: children should be in lexicographic order */
    /* check if children of this node are in lexicographic order */   
 
    return TRUE;
+   }
 }
 
 /*
@@ -59,8 +99,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 */
 static boolean CheckerDT_treeCheck(Node_T oNNode) {
    size_t ulIndex;
-   Path_T oPChildPath;
-   Path_T oPNodePath;
+   /*Path_T oPChildPath;
+   Path_T oPNodePath;*/
 
    if(oNNode!= NULL) {
 
@@ -70,20 +110,13 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
          return FALSE;
 
       /* Recur on every child of oNNode */
-      oPNodePath = Node_getPath(oNNode);
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
       {
          Node_T oNChild = NULL;
          int iStatus = Node_getChild(oNNode, ulIndex, &oNChild);
 
          if(iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
-            return FALSE;
-         }
-
-         oPChildPath = Node_getPath(oNChild);
-         if (Path_comparePath(oPNodePath, oPChildPath) == 0) {
-            fprintf(stderr, "Two nodes have same absolute path.");
+            fprintf(stderr,"getNumChildren claims more children than getChild returns\n");
             return FALSE;
          }
 
