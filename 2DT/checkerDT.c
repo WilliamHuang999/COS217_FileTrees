@@ -70,7 +70,7 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
          iStatus = Node_getChild(oNNode,j,&oNChild2);
 
          if (iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+            fprintf(stderr, "getNumChildren claims more children than getChild returns1234\n");
             return FALSE;
          }
 
