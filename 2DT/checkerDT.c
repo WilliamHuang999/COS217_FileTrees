@@ -41,6 +41,10 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
    /* Invariant: two nodes cannot have the same absolute path */
    /* int Path_comparePath(Path_T oPPath1, Path_T oPPath2); */
 
+   /* I THINK THIS INVARIANT WILL SOLVE DTBAD3 */
+   /* Invariant: children should be in lexicographic order */
+   /* check if children of this node are in lexicographic order */   
+
    return TRUE;
 }
 
@@ -55,6 +59,8 @@ boolean CheckerDT_Node_isValid(Node_T oNNode) {
 */
 static boolean CheckerDT_treeCheck(Node_T oNNode) {
    size_t ulIndex;
+   Path_T oPChildPath;
+   Path_T oPNodePath;
 
    if(oNNode!= NULL) {
 
@@ -64,6 +70,7 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
          return FALSE;
 
       /* Recur on every child of oNNode */
+      oPNodePath = Node_getPath(oNNode);
       for(ulIndex = 0; ulIndex < Node_getNumChildren(oNNode); ulIndex++)
       {
          Node_T oNChild = NULL;
@@ -73,6 +80,12 @@ static boolean CheckerDT_treeCheck(Node_T oNNode) {
             fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
             return FALSE;
          }
+
+         oPChildPath = Node_getPath(oNChild);
+         if (Path_comparePath(oPNodePath, oPChildPath == 0)) {
+            fprintf(stderr, "Two nodes have same absolute path.");
+            return FALSE;
+         }         
 
          /* if recurring down one subtree results in a failed check
             farther down, passes the failure back up immediately */
