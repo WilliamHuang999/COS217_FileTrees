@@ -143,9 +143,9 @@ nodeDT.h and nodeDTGood.c critiques
 	DT_strcatAccumulate().
       - In Node_new(), the variable psNew is declared as a struct node*.
 	For consistency and understandability, it should be declared as
-	a Node_T* even though they're essentially the same thing.
+	a Node_T even though they're essentially the same thing.
 	Additionally, if it's declared as a Node_T, the name should be
-	changed to pONNew.
+	changed to oNNew.
 
 dt.h and dtGood.c critiques
       - For DT_strcatAccumulate(), there's no clear reason to invert the
