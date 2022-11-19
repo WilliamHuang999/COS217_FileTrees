@@ -1,13 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* nodef.h                                                            */
 /* Author: Will Huang and George Tziampazis                           */
-
-
-
-
-
-/* CHANGE COMMENTS====================================================*/
-/* ADD OTHER NECESSARY FUNCTIONS======================================*/
 /*--------------------------------------------------------------------*/
 
 #ifndef NODEF_INCLUDED
@@ -22,26 +15,16 @@
 typedef struct nodeF *NodeF_T;
 
 /*
-  MAYBE CHANGE PARAMETERS============================================
-
-
-
-  Creates a new directory node in Directory Tree, with path oPPath and
-  parent oNFParent. Returns an int SUCCESS status and sets *poNResult
-  to be the new node if successful. Otherwise, sets *poNResult to NULL
-  and returns status:
+  Creates a new file node in File Tree, with path oPPath. Returns an int SUCCESS status and sets *poNFResult to be the new node
+  if successful. Otherwise, sets *poNFResult to NULL and returns status:
   * MEMORY_ERROR if memory could not be allocated to complete request
-  * CONFLICTING_PATH if oNDParent's path is not an ancestor of oPPath
-  * NO_SUCH_PATH if oPPath is of depth 0
-                 or oNDParent's path is not oPPath's direct parent
-                 or oNDParent is NULL but oPPath is not of depth 1
-  * ALREADY_IN_TREE if oNDParent already has a child with this path
+  * NO_SUCH_PATH if oPPath is of depth 0 or 1 (root cannot be a file)
 */
-int NodeF_new(Path_T oPPath, NodeF_T *poNResult);
+int NodeF_new(Path_T oPPath, NodeF_T *poNFResult);
 
 /*
-  Destroys and frees all memory allocated this file node
-  oNFNode, i.e. Returns number of bytes the file had.
+  Destroys and frees all memory allocated to this file node
+  oNFNode, i.e. Returns number of bytes the file contents had.
 */
 size_t NodeF_free(NodeF_T oNFNode);
 
