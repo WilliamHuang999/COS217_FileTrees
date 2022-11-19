@@ -151,12 +151,6 @@ dt.h and dtGood.c critiques
       - For DT_strcatAccumulate(), there's no clear reason to invert the
 	typical argument order from strcat. This inversion could
 	potentially be confusing. Argument order should match strcat.
-      - In DT_contains(), the node oNFound is not really used. It is
-      passed as a parameter to DT_findNode. If the node with path pcPath
-      is found, oNFound is set to the corresponding node. If the node
-	isn't found, oNFound is set to NULL. However, oNFound is
-	ultimately never returned or used for anything, so the client
-	can't access it.
       - DT_contains() seems unneccessary especially since DT_findNode()
       already exists (despite it being a static function) and will also
       tell the client if the node exists.
