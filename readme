@@ -134,11 +134,32 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
+functions that are not used
+functions not used to the best of their abilities
+module bloat
+questionable naming conventions
+parameter order
+
 Consistency:
 - Argument order in nodeDT.h
+      - 
 - Argument naming in nodeDT.h
       - Argument names in Node_compare() should match the convention set
-      in Path_comparePath() in path.h, recommend to change argument
-      names to onNode1 and onNode2.
+        in Path_comparePath() in path.h, recommend to change argument
+        names to onNode1 and onNode2.
+- dtGood.c critiques
+      - For DT_strcatAccumulate(), there's no clear reason to invert the
+	typical argument order from strcat. This inversion could
+	potentially be confusing.
+      - In DT_contains(), the node oNFound is not really used. It is
+      passed as a parameter to DT_findNode. If the node with path pcPath
+      is found, oNFound is set to the corresponding node. If the node
+	isn't found, oNFound is set to NULL. However, oNFound is
+	ultimately never returned or used for anything, so the client
+	can't access it.
+      - DT_contains() seems unneccessary especially since DT_findNode()
+      already exists (despite it being a static function) and will also
+      tell the client if the node exists.
+      - For DT_rm(), instead of returning a status,
 
 ------------------------------------------------------------------------
