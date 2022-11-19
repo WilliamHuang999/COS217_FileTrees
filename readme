@@ -134,23 +134,23 @@ the error manifests itself or is "noticed" by the client.
 What are your critiques of the given DT implementations, as
 specified in Step 2.5?
 
-functions that are not used
-functions not used to the best of their abilities
-module bloat
-questionable naming conventions
-parameter order
-
-Consistency:
-- Argument order in nodeDT.h
-      - 
-- Argument naming in nodeDT.h
+nodeDT.h and nodeDTGood.c critiques
       - Argument names in Node_compare() should match the convention set
-        in Path_comparePath() in path.h, recommend to change argument
-        names to onNode1 and onNode2.
-- dtGood.c critiques
+      in Path_comparePath() in path.h, recommend to change argument
+      names to onNode1 and onNode2.
+      - Node_toString() is declared and defined but doesn't seem to be
+	used anywhere. It could potentially be used in
+	DT_strcatAccumulate().
+      - In Node_new(), the variable psNew is declared as a struct node*.
+	For consistency and understandability, it should be declared as
+	a Node_T* even though they're essentially the same thing.
+	Additionally, if it's declared as a Node_T, the name should be
+	changed to pONNew.
+
+dt.h and dtGood.c critiques
       - For DT_strcatAccumulate(), there's no clear reason to invert the
 	typical argument order from strcat. This inversion could
-	potentially be confusing.
+	potentially be confusing. Argument order should match strcat.
       - In DT_contains(), the node oNFound is not really used. It is
       passed as a parameter to DT_findNode. If the node with path pcPath
       is found, oNFound is set to the corresponding node. If the node
@@ -160,6 +160,17 @@ Consistency:
       - DT_contains() seems unneccessary especially since DT_findNode()
       already exists (despite it being a static function) and will also
       tell the client if the node exists.
-      - For DT_rm(), instead of returning a status,
+
+Path.h and Path.c critiques
+      - Path_dup() seems unnecessary. It is only called once in
+	nodeDTGood.c. Furthermore, looking at its definition, the
+	calling of Path_dup() could easily be replaced by calling
+	Path_prefix() instead.
+
+General critiques
+      - There should be more line comments within functions in all the
+	modules to explain the relevant logic. Reading the code is
+	confusing at times without comments. For example, DT_rm() has no
+	line comments at all.
 
 ------------------------------------------------------------------------
