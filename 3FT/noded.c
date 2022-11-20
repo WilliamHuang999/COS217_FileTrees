@@ -277,7 +277,7 @@ int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
 }
 
 NodeD_T NodeD_getParent(NodeD_T oNdNode) {
-   assert(oNNode != NULL);
+   assert(oNdNode != NULL);
 
    return oNdNode->oNdParent;
 }
@@ -287,14 +287,6 @@ int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2) {
    assert(oNdNode2 != NULL);
 
    return Path_comparePath(oNdNode1->oPPath, oNdNode2->oPPath);
-}
-
-/* compare dir to file, dir always will come before file in definition, make clear in .h file */
-int NodeD_compare(NodeD_T oNdNode1, NodeF_T oNfNode2) {
-   assert(oNdNode1 != NULL);
-   assert(oNfNode2 != NULL);
-
-   return Path_comparePath(oNdNode1->oPPath, oNfNode2->oPPath);
 }
 
 char *NodeD_toString(NodeD_T oNdNode) {

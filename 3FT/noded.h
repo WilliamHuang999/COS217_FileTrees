@@ -99,15 +99,6 @@ NodeD_T NodeD_getParent(NodeD_T oNdNode);
 int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2);
 
 /*
-  Compares one directory node to one file node, oNDNode1 and oNFNode2 
-  respecitvely, lexicographically based on their paths. Returns <0, 0, 
-  or >0 if oNDNode1 is "less than", "equal to", or "greater than" 
-  oNDNode2, respectively. Calling this function, the directory node 
-  MUST be the first parameter and the file must be the second.
-*/
-/*int NodeD_compare(NodeD_T oNdNode1, NodeF_T oNfNode2);*/
-
-/*
   Returns a string representation for oNDNode, or NULL if
   there is an allocation error. String representation includes the file children and directory children
 
