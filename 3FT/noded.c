@@ -14,28 +14,16 @@
 struct nodeD {
     /* the object corresponding to the node's absolute path */
     Path_T oPPath;
+
     /* this node's parent */
     NodeD_T oNdParent;
+
     /* the object containing links to this node's children that are files */
     DynArray_T oDFileChildren;
+
     /* the object containg links to this node's children that are directories */
     DynArray_T oDDirChildren;
 };
-
-
-/*
-  Links new file child oNfChild into oNdParent's file children array at index ulIndex. Returns SUCCESS if the new file child was added successfully, or  MEMORY_ERROR if allocation fails adding oNfChild to the file children array.
-*/
-static int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild,
-                         size_t ulIndex) {
-   assert(oNdParent != NULL);
-   assert(oNfChild != NULL);
-
-   if(DynArray_addAt(oNdParent->oDFileChildren, ulIndex, oNfChild))
-      return SUCCESS;
-   else
-      return MEMORY_ERROR;
-}
 
 /*
   Links new directory child oNdChild into oNdParent's directory children array at index ulIndex. Returns SUCCESS if the new directory child was added successfully, or  MEMORY_ERROR if allocation fails adding oNdChild to the directory children array.
@@ -45,7 +33,7 @@ static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
     assert(oNdParent != NULL);
     assert(oNdChild != NULL);
 
-    if(DynArray_addAt(oNdParent->odDirChildren, ulIndex, oNdChild))
+    if(DynArray_addAt(oNdParent->oDDirChildren, ulIndex, oNdChild))
         return SUCCESS;
     else
         return MEMORY_ERROR;
@@ -57,14 +45,6 @@ static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
   "greater than" pcSecond, respectively.
 */
 static int NodeD_compareString(const NodeD_T oNdNode1,
-                                 const char *pcSecond) {
-   assert(oNdNode1 != NULL);
-   assert(pcSecond != NULL);
-
-   return Path_compareString(oNdNode1->oPPath, pcSecond);
-}
-
-static int NodeF_compareString(const NodeF_T oNdNode1,
                                  const char *pcSecond) {
    assert(oNdNode1 != NULL);
    assert(pcSecond != NULL);
@@ -296,7 +276,7 @@ int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
    }
 }
 
-Node_T NodeD_getParent(NodeD_T oNdNode) {
+NodeD_T NodeD_getParent(NodeD_T oNdNode) {
    assert(oNNode != NULL);
 
    return oNdNode->oNdParent;
