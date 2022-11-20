@@ -17,7 +17,13 @@ information given in the "Policies" web page (also available on armlab
 in the file ~cos217/AuthorizedSourcesList ) to this section of the
 readme file, and edit it as appropriate.
 
-
+The course's lectures
+The course's lecture slides
+The course's precepts
+The course's website
+The course's precept handouts
+Public ed posts by other students that staff members have answered
+Private ed posts
 
 ------------------------------------------------------------------------
 Student 2: What authorized sources of information did you use to
@@ -26,7 +32,13 @@ information given in the "Policies" web page (also available on armlab
 in the file ~cos217/AuthorizedSourcesList ) to this section of the
 readme file, and edit it as appropriate.
 
-
+The course's lectures
+The course's lecture slides
+The course's precepts
+The course's website
+The course's precept handouts
+Public ed posts by other students that staff members have answered
+Private ed posts
 
 ------------------------------------------------------------------------
 Student 1: What unauthorized sources of information did you use to
@@ -60,15 +72,16 @@ None
 Student 1: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
-
+Was interesting to learn how to implement file/directory trees as they
+are used in a lot of real world applications. Assignment took a long
+time.
 
 ------------------------------------------------------------------------
 Student 2: What is your assessment of the assignment? Was it helpful?
 Was it fun?
 
 A lot of work but useful for learning how to understand and edit
-existing codebase
-
+existing codebase.
 
 ------------------------------------------------------------------------
 (optional) What information can you provide about your submission that
@@ -83,7 +96,27 @@ your disagreements with them? Copy the splint warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+splint command that was run:
+splint checkerDT.c dynarray.c path.c nodeDTGood.c dtGood.c
 
+nodeDTGood.c: (in function Node_new)
+nodeDTGood.c:148:48: Variable ulIndex used before definition
+  An rvalue is used that may not be initialized to a value on some 
+  execution path. (Use -usedef to inhibit warning)
+nodeDTGood.c: (in function Node_free)
+nodeDTGood.c:180:35: Variable ulIndex used before definition
+dtGood.c: (in function DT_traversePath)
+dtGood.c:94:42: Variable ulChildID used before definition
+path.h:94:13: Function exported but not used outside path:
+  Path_getComponent
+  A declaration is exported, but not used outside this module.
+  Declaration can use static qualifier.
+  (Use -exportlocal to inhibit warning)
+  path.c:316:1: Definition of Path_getComponent
+
+
+All these warning refer to parts of nodeDTGood.c, dtGood.c and path.h
+that are not affected by nor relevant to checkerDT.c.
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on checkerDT.c, and what are your
@@ -91,7 +124,64 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
+Checking checkerDT.c
+checkerDT.c:121:26: warning: missing terminating " character
+          fprintf(stderr, "getNumChildren claims more children than \
+                          ^
+checkerDT.c:123:19: warning: missing terminating " character
+ getChild returns\n");
+                   ^
+checkerDT.c:141:10: warning: missing terminating " character
+          "Two nodes cannot have the same absolute path. Parent: (%s). \
+          ^
+checkerDT.c:143:14: warning: missing terminating " character
+ Child: (%s)\n",
+              ^
+checkerDT.c:163:29: warning: missing terminating " character
+             fprintf(stderr, "getNumChildren claims more children than \
+                             ^
+checkerDT.c:165:19: warning: missing terminating " character
+ getChild returns\n");
+                   ^
+checkerDT.c:179:29: warning: missing terminating " character
+             fprintf(stderr, "Two nodes cannot have same absolute path. \
+                             ^
+checkerDT.c:181:27: warning: missing terminating " character
+ Child: (%s). Child: (%s)\n",
+                           ^
+checkerDT.c:197:29: warning: missing terminating " character
+             fprintf(stderr, "Children are not in lexicographic order. \
+                             ^
+checkerDT.c:199:27: warning: missing terminating " character
+ Child: (%s). Child: (%s)\n",
+                           ^
+checkerDT.c:269:28: warning: missing terminating " character
+             fprintf(stderr,"getNumChildren claims more children than \
+                            ^
+checkerDT.c:271:31: warning: missing terminating " character
+             getChild returns\n");
+                               ^
+checkerDT.c:395:23: warning: missing terminating " character
+       fprintf(stderr, "ulCount does not match actual number \
+                       ^
+checkerDT.c:399:32: warning: missing terminating " character
+ Number of nodes counted: %lu.\n",ulCount,nodeCount);
+                                ^
 
+Disagreements with above warnings: all the above warnings refer to
+missing terminating " characters in the strings. However, it was
+impossible to place those strings on one line due to the 73 character
+line limit. As a result, we used \ characters to separate the strings
+onto separate lines. critTer doesn't seem to recognize that.
+
+
+checkerDT.c: line 50: low priority:
+   A loop should consist of fewer than 35 lines;
+   this loop consists of 44 lines; consider refactoring
+
+Disagreement: the long loop is necessary to check the relevant
+invariants and print the proper error messages to stderr when an
+invariant is found.
 
 ------------------------------------------------------------------------
 What warnings does splint generate on your Part 3 code, and what are
