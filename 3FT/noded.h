@@ -83,7 +83,7 @@ int NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
   * NO_SUCH_PATH if ulChildID is not a valid child for oNDParent
 */
 int NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
-                   NodeF_T *poNfResult)
+                   NodeF_T *poNfResult);
 
 /*
   Returns a the parent node of oNDNode.
