@@ -74,7 +74,7 @@ size_t NodeD_getNumFileChildren(NodeD_T oNdParent);
   Otherwise, sets *poNResult to NULL and returns status:
   * NO_SUCH_PATH if ulChildID is not a valid child for oNDParent
 */
-int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
+int NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
                    NodeD_T *poNdResult);
 
 /*
@@ -82,24 +82,30 @@ int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
   Otherwise, sets *poNResult to NULL and returns status:
   * NO_SUCH_PATH if ulChildID is not a valid child for oNDParent
 */
-int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
+int NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
                    NodeF_T *poNfResult)
 
 /*
   Returns a the parent node of oNDNode.
   Returns NULL if oNDNode is the root and thus has no parent.
 */
-Node_T NodeD_getParent(NodeD_T oNdNode);
+NodeD_T NodeD_getParent(NodeD_T oNdNode);
 
 /*
-  Compares two directory nodes oNDNode1 and oNDNode2 lexicographically based on their paths. Returns <0, 0, or >0 if oNDNode1 is "less than", "equal to", or "greater than" oNDNode2, respectively.
+  Compares two directory nodes oNDNode1 and oNDNode2 lexicographically 
+  based on their paths. Returns <0, 0, or >0 if oNDNode1 is "less 
+  than", "equal to", or "greater than" oNDNode2, respectively.
 */
 int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2);
 
 /*
-  Compares one directory node to one file node, oNDNode1 and oNFNode2 respecitvely, lexicographically based on their paths. Returns <0, 0, or >0 if oNDNode1 is "less than", "equal to", or "greater than" oNDNode2, respectively. Calling this function, the directory node MUST be the first parameter and the file must be the second.
+  Compares one directory node to one file node, oNDNode1 and oNFNode2 
+  respecitvely, lexicographically based on their paths. Returns <0, 0, 
+  or >0 if oNDNode1 is "less than", "equal to", or "greater than" 
+  oNDNode2, respectively. Calling this function, the directory node 
+  MUST be the first parameter and the file must be the second.
 */
-int NodeD_compare(NodeD_T oNdNode1, NodeF_T oNfNode2);
+/*int NodeD_compare(NodeD_T oNdNode1, NodeF_T oNfNode2);*/
 
 /*
   Returns a string representation for oNDNode, or NULL if

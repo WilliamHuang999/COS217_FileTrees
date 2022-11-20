@@ -310,11 +310,11 @@ int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2) {
 }
 
 /* compare dir to file, dir always will come before file in definition, make clear in .h file */
-int NodeD_compare(NodeD_T oNdNode1, NodeF_T oNfNode2) {
+/*int NodeD_compare(NodeD_T oNdNode1, NodeF_T oNfNode2) {
    assert(oNdNode1 != NULL);
    assert(oNfNode2 != NULL);
 
-   return Path_comparePath(oNdNode1->oPPath, oNfNode2->oPPath);
+   return Path_comparePath(oNdNode1->oPPath, oNfNode2->oPPath);*/
 }
 
 char *NodeD_toString(NodeD_T oNdNode) {
