@@ -15,7 +15,7 @@ ft_client.o: ft_client.c ft.h a4def.h
 nodef.o: nodef.c nodef.h path.h a4def.h
 	gcc217 -g -c nodef.c
 
-noded.o: noded.c dynarray.h noded.h nodef.h path.h a4def.h
+noded.o: noded.c dynarray.h nodef.h noded.h path.h a4def.h
 	gcc217 -g -c noded.c
 
 ft.o: ft.c dynarray.h noded.h nodef.h ft.h path.h a4def.h
