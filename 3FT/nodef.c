@@ -100,15 +100,15 @@ int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond) {
 
 /* ================================================================== */
 char *NodeF_toString(NodeF_T oNfNode) {
-   char *pcResult;   /* String representation of oNFNode */
+   char *copyPath;   /* String representation of oNFNode */
 
    assert(oNfNode != NULL);
 
-   /* Allocate mem for pcResult and check if enough mem */
-   pcResult = malloc(Path_getStrLength(NodeF_getPath(oNfNode))+1);
-   if(pcResult == NULL) {
+   /* Allocate mem for copyPath and check if enough mem */
+   copyPath = malloc(Path_getStrLength(NodeF_getPath(oNfNode))+1);
+   if(copyPath == NULL) {
       return NULL;
    }
-   /* Copy path name to pcResult and return the copy */
-   return strcpy(pcResult, Path_getPathname(NodeF_getPath(oNfNode)));
+   /* Copy path name to copyPath and return the copy */
+   return strcpy(copyPath, Path_getPathname(NodeF_getPath(oNfNode)));
 }
