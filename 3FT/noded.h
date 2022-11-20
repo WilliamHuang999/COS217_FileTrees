@@ -27,17 +27,17 @@ typedef struct nodeD *NodeD_T;
                  or oNDParent is NULL but oPPath is not of depth 1
   * ALREADY_IN_TREE if oNDParent already has a child with this path
 */
-int NodeD_new(Path_T oPPath, NodeD_T oNParent, NodeD_T *poNResult);
+int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult);
 
 /*
   Destroys and frees all memory allocated for the subtree rooted at
   oNDNode, i.e., deletes this directory and all its descendents. 
   Returns the number of directories and files deleted.
 */
-size_t NodeD_free(NodeD_T oNNode);
+size_t NodeD_free(NodeD_T oNdNode);
 
 /* Returns the path object representing oNDNode's absolute path. */
-Path_T NodeD_getPath(NodeD_T oNNode);
+Path_T NodeD_getPath(NodeD_T oNdNode);
 
 /*
   Returns TRUE if oNDParent has a child dir with path oPPath. Returns
@@ -48,14 +48,14 @@ Path_T NodeD_getPath(NodeD_T oNNode);
   such a child, stores in *pulChildID the identifier that such a
   child _would_ have if inserted.
 */
-boolean NodeD_hasChild(NodeD_T oNParent, Path_T oPPath,
+boolean NodeD_hasChild(NodeD_T oNdParent, Path_T oPPath,
                          size_t *pulChildID);
 
 /* Returns the number of directory children that oNDParent has. */
-size_t NodeD_getNumDirChildren(NodeD_T oNParent);
+size_t NodeD_getNumDirChildren(NodeD_T oNdParent);
 
 /* Returns the number of file children that oNDParent has. */
-size_t NodeD_getNumFileChildren(NodeD_T oNParent);
+size_t NodeD_getNumFileChildren(NodeD_T oNdParent);
 
 
 /*
@@ -63,32 +63,32 @@ size_t NodeD_getNumFileChildren(NodeD_T oNParent);
   Otherwise, sets *poNResult to NULL and returns status:
   * NO_SUCH_PATH if ulChildID is not a valid child for oNDParent
 */
-int  NodeD_getDirChild(NodeD_T oNParent, size_t ulChildID,
-                   Node_T *poNResult);
+int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
+                   NodeD_T *poNdResult);
 
 /*
   Returns an int SUCCESS status and sets *poNResult to be the file child node of oNDParent with identifier ulChildID, if one exists.
   Otherwise, sets *poNResult to NULL and returns status:
   * NO_SUCH_PATH if ulChildID is not a valid child for oNDParent
 */
-int  NodeD_getFileChildren(NodeD_T oNParent, size_t ulChildID,
-                   Node_T *poNResult)
+int  NodeD_getFileChildren(NodeD_T oNdParent, size_t ulChildID,
+                   NodeF_T *poNfResult)
 
 /*
   Returns a the parent node of oNDNode.
   Returns NULL if oNDNode is the root and thus has no parent.
 */
-Node_T NodeD_getParent(NodeD_T oNNode);
+Node_T NodeD_getParent(NodeD_T oNdNode);
 
 /*
   Compares two directory nodes oNDNode1 and oNDNode2 lexicographically based on their paths. Returns <0, 0, or >0 if oNDNode1 is "less than", "equal to", or "greater than" oNDNode2, respectively.
 */
-int NodeD_compare(NodeD_T oNDNode1, NodeD_T oNDNode2);
+int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2);
 
 /*
   Compares one directory node to one file node, oNDNode1 and oNFNode2 respecitvely, lexicographically based on their paths. Returns <0, 0, or >0 if oNDNode1 is "less than", "equal to", or "greater than" oNDNode2, respectively. Calling this function, the directory node MUST be the first parameter and the file must be the second.
 */
-int NodeD_compare(NodeD_T oNDNode1, NodeF_T oNFNode2);
+int NodeD_compare(NodeD_T oNdNode1, NodeF_T oNfNode2);
 
 /*
   Returns a string representation for oNDNode, or NULL if
@@ -97,6 +97,6 @@ int NodeD_compare(NodeD_T oNDNode1, NodeF_T oNFNode2);
   Allocates memory for the returned string, which is then owned by
   the caller!
 */
-char *NodeD_toString(NodeD_T oNNode);
+char *NodeD_toString(NodeD_T oNdNode);
 
 #endif
