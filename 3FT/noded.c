@@ -224,17 +224,26 @@ Path_T NodeD_getPath(NodeD_T oNdNode) {
    return oNdNode->oPPath;
 }
 
-/* MAKE SURE SETTING THE IDS ISNT FUCKED UP IN THE RETURN STATEMENT */
-boolean NodeD_hasChild(NodeD_T oNdParent, Path_T oPPath,
+boolean NodeD_hasDirChild(NodeD_T oNdParent, Path_T oPPath,
                          size_t *pulChildID) {
    assert(oNdParent != NULL);
    assert(oPPath != NULL);
    assert(pulChildID != NULL);
 
-   /* *pulChildID is the index into oNdParent->oDChildren */
+   /* *pulChildID is the index into oNdParent->oDDirChildren */
    return (DynArray_bsearch(oNdParent->oDDirChildren,
             (char*) Path_getPathname(oPPath), pulChildID,
-            (int (*)(const void*,const void*)) NodeD_compareString) || DynArray_bsearch(oNdParent->oDFileChildren,
+            (int (*)(const void*,const void*)) NodeD_compareString));
+}
+
+boolean NodeD_hasFileChild(NodeD_T oNdParent, Path_T oPPath,
+                         size_t *pulChildID) {
+   assert(oNdParent != NULL);
+   assert(oPPath != NULL);
+   assert(pulChildID != NULL);
+
+   /* *pulChildID is the index into oNdParent->oDDirChildren */
+   return (DynArray_bsearch(oNdParent->oDFileChildren,
             (char*) Path_getPathname(oPPath), pulChildID,
             (int (*)(const void*,const void*)) NodeF_compareString));
 }
@@ -269,7 +278,7 @@ int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
    }
 }
 
-int  NodeD_getFileChildren(NodeD_T oNdParent, size_t ulChildID,
+int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
                    NodeF_T *poNfResult) {
 
    assert(oNdParent != NULL);

@@ -40,15 +40,26 @@ size_t NodeD_free(NodeD_T oNdNode);
 Path_T NodeD_getPath(NodeD_T oNdNode);
 
 /*
-  Returns TRUE if oNDParent has a child dir with path oPPath. Returns
-  FALSE if it does not.
+  Returns TRUE if oNDParent has a child directory with path oPPath. Returns FALSE if it does not.
 
   If oNDParent has such a child, stores in *pulChildID the child's
-  identifier (as used in NodeD_getChild). If oNDParent does not have
+  identifier (as used in NodeD_getDirChild). If oNDParent does not have
   such a child, stores in *pulChildID the identifier that such a
   child _would_ have if inserted.
 */
-boolean NodeD_hasChild(NodeD_T oNdParent, Path_T oPPath,
+boolean NodeD_hasDirChild(NodeD_T oNdParent, Path_T oPPath,
+                         size_t *pulChildID);
+
+/*
+  Returns TRUE if oNDParent has a child file with path oPPath. Returns
+  FALSE if it does not.
+
+  If oNDParent has such a child, stores in *pulChildID the child's
+  identifier (as used in NodeD_getFileChild). If oNDParent does not have
+  such a child, stores in *pulChildID the identifier that such a
+  child _would_ have if inserted.
+*/
+boolean NodeD_hasFileChild(NodeD_T oNdParent, Path_T oPPath,
                          size_t *pulChildID);
 
 /* Returns the number of directory children that oNDParent has. */
@@ -71,7 +82,7 @@ int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
   Otherwise, sets *poNResult to NULL and returns status:
   * NO_SUCH_PATH if ulChildID is not a valid child for oNDParent
 */
-int  NodeD_getFileChildren(NodeD_T oNdParent, size_t ulChildID,
+int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
                    NodeF_T *poNfResult)
 
 /*
