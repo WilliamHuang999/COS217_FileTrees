@@ -32,12 +32,16 @@ static size_t ulCount;
   Traverses the FT starting at the root to the farthest possible DIRECTORY following absolute path oPPath. If able to traverse, returns an int SUCCESS status and sets *poNFurthest to the furthest directory node reached (which may be only a prefix of oPPath, or even NULL if the root is NULL). Otherwise, sets *poNFurthest to NULL and returns with status:
   * CONFLICTING_PATH if the root's path is not a prefix of oPPath
   * MEMORY_ERROR if memory could not be allocated to complete request
+
+  *Credit: Adapted from DT_traversePath() (Christopher Moretti)
 */
 static int FT_traversePath(Path_T oPPath, NodeD_T) {
     int iStatus;
     Path_T oPPrefix = NULL;
     NodeD_T oNCurr;
-    size_t ulDepth;
+    NodeD_T oNChild;
+    size_t ulDepth, ulChildID;
+    size_t i;
 
     assert(oPPath != NULL);
     assert(poNFurthest != NULL);
@@ -65,17 +69,75 @@ static int FT_traversePath(Path_T oPPath, NodeD_T) {
 
     oNCurr = oNRoot;
     ulDepth = Path_getDepth(oPPath);
-    /* Increment over depths until at parent directory of last node in path. Will stop there regardless of whether the last node is a directory or a file. */
-    for (i = 2; i <= ulDepth - 1; i++) {
+    /* Increment over depths until at closest ancestor directory of last node in the path. If the last node is a directory, it will stop there. */
+    for (i = 2; i <= ulDepth; i++) {
         iStatus = Path_prefix(oPPath, i, &oPPrefix);
         if(iStatus != SUCESS) {
             *poNFurthest = NULL;
             return iStatus;
         }
-        if (NodeD_hasChild)
+        if (NodeD_hasDirChild(oNCurr, oPPrefix, &ulChildID)) {
+            Path_free(oPPrefix);
+            oPPrefix = NULL;
+            iStatus = NodeD_getDirChild(oNCurr, ulChildID, &oNChild);
+            if (iStatus != SUCCESS) {
+                *poNFurthest = NULL;
+                return iStatus;
+            }
+            onCurr = oNChild;
+        }
+        else {
+            break;
+        }
     }
+    Path_free(oPPrefix);
+    *poNFurthest = oNCurr;
+    return SUCCESS;
 }
 
+static int FT_FindDir(const char *pcPath, NodeD_T *poNResult) {
+    Path_T oPPath = NULL;
+    NodeD_T oNFound = NULL;
+    int iStatus;
+
+    assert(pcPath != NULL);
+    assert(poNResult != NULL);
+
+    if(!bIsInitialized) {
+        *poNResult = NULL;
+        return INITIALIZATION_ERROR;
+    }
+
+    iStatus = Path_new(pcPath, &oPPath);
+    if(iStatus != SUCCESS) {
+        *poNResult = NULL;
+        return iStatus;
+    }
+
+    iStatus = FT_traversePath(oPPath, &oNFound);
+    if(iStatus != SUCCESS)
+    {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return iStatus;
+    }
+
+    if(oNFound == NULL) {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return NO_SUCH_PATH;
+    }
+
+    if(Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return NO_SUCH_PATH;
+    }
+
+    Path_free(oPPath);
+    *poNResult = oNFound;
+    return SUCCESS;
+}
 
 /* ================================================================== */
 
@@ -93,7 +155,10 @@ static int FT_traversePath(Path_T oPPath, NodeD_T) {
 int FT_insertDir(const char *pcPath) {
     int iStatus;
     Path_T oPPath = NULL;
+    NodeD_T oNFirstNew = NULL;
     NodeD_T oNCurr = NULL;
+    size_t ulDepth, ulIndex;
+    size_t ulNewNodes = 0; 
 
 
     /* validate pcPath and generate a Path_T for it */
@@ -104,20 +169,88 @@ int FT_insertDir(const char *pcPath) {
     if(iStatus != SUCCESS)
         return iStatus;
     
-    /* find the closest ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
+    /* find the closest directory ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
     iStatus= FT_traversePath(oPPath, &oNCurr);
     if(iStatus != SUCCESS)
     {
         Path_free(oPPath);
         return iStatus;
     }
-}
+
+    /* no ancestor node found, so if root is not NULL,
+      pcPath isn't underneath root. */
+    if(oNCurr == NULL && oNRoot != NULL) {
+        Path_free(oPPath);
+        return CONFLICTING_PATH;
+    }
+
+    ulDepth = Path_getDepth(oPPath);
+    if(oNCurr == NULL) /* new root! */
+        ulIndex = 1;
+    else {
+        ulIndex = Path_getDepth(Node_getPath(oNCurr)) + 1;
+        /* oNCurr is the node we're trying to insert */
+        if (ulIndex == ulDepth + 1 && !Path_comparePath(oPPath, NodeD_getPath(oNCurr))) {
+            Path_free(oPPath);
+            return ALREADY_IN_TREE;
+        }
+    }
+
+    /* starting at oNCurr, build rest of the path one level at a time */
+    while (ulIndex <= ulDepth) {
+        Path_T oPPrefix = NULL;
+        NodeD_T oNNewNode = NULL;
+
+        /* generate a Path_T for this level */
+        iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
+        if (iStatus != SUCCESS) {
+            Path_free(oPPath);
+            if (oNFirstNew != NULL)
+                (void) NodeD_free(oNFirstNew);
+            return iStatus;
+        }
+
+        /* insert the new node for this level */
+        iStatus = NodeD_new(oPPrefix, oNCurr, &oNNewNode);
+        if(iStatus != SUCCESS) {
+            Path_free(oPPath);
+            Path_free(oPPrefix);
+            if(oNFirstNew != NULL)
+                (void) NodeD_free(oNFirstNew);
+            return iStatus;
+        }
+
+        /* set up for next level */
+        Path_free(oPPrefix);
+        oNCurr = oNNewNode;
+        ulNewNodes++;
+        if(oNFirstNew == NULL)
+            oNFirstNew = oNCurr;
+        ulIndex++;
+    }
+
+    Path_free(oPPath);
+    /* update DT state variables to reflect insertion */
+    if(oNRoot == NULL)
+        oNRoot = oNFirstNew;
+    ulCount += ulNewNodes;
+
+    return SUCCESS;
+}   
 
 /*
   Returns TRUE if the FT contains a directory with absolute path
   pcPath and FALSE if not or if there is an error while checking.
 */
-boolean FT_containsDir(const char *pcPath);
+boolean FT_containsDir(const char *pcPath) {
+    int iStatus;
+    NodeD_T oNFound = NULL;
+
+    assert(pcPath != NULL);
+
+    iStatus = FT_findNode(pcPath, &oNFound);
+    return (boolean) (iStatus == SUCCESS);
+}
 
 /*
   Removes the FT hierarchy (subtree) at the directory with absolute
