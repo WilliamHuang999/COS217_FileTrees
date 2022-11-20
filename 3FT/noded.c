@@ -205,7 +205,7 @@ size_t NodeD_free(NodeD_T oNNode) {
 
    /* recursively remove file children */
    while(DynArray_getLength(oNNode->oDFileChildren) != 0) {
-      ulCount += NodeF_free(DynArray_get(oNNode->odFileChildren, 0));
+      ulCount += NodeF_free(DynArray_get(oNNode->oDFileChildren, 0));
    }
    DynArray_free(oNNode->oDFileChildren);
 
@@ -238,21 +238,27 @@ boolean NodeD_hasChild(NodeD_T oNParent, Path_T oPPath,
             (int (*)(const void*,const void*)) NodeF_compareString));
 }
 
-size_t NodeD_getNumChildren(NodeD_T oNParent) {
+size_t NodeD_getNumDirChildren(NodeD_T oNParent) {
    assert(oNParent != NULL);
 
-   return DynArray_getLength(oNParent->oDDirChildren) + DynArray_getLength(oNParent->oDFileChildren);
+   return DynArray_getLength(oNParent->oDDirChildren);
+}
+
+size_t NodeD_getNumFileChildren(NodeD_T oNParent) {
+   assert(oNParent != NULL);
+
+   return DynArray_getLength(oNParent->oDFileChildren);
 }
 
 /* NEED TO FIGURE OUT IDs BETWEEN FILE AND DIRS */
-int  NodeD_getChild(NodeD_T oNParent, size_t ulChildID,
+int  NodeD_getDirChild(NodeD_T oNParent, size_t ulChildID,
                    Node_T *poNResult) {
 
    assert(oNParent != NULL);
    assert(poNResult != NULL);
 
    /* ulChildID is the index into oNParent->oDChildren */
-   if(ulChildID >= Node_getNumChildren(oNParent)) {
+   if(ulChildID >= NodeD_getNumDirChildren(oNParent)) {
       *poNResult = NULL;
       return NO_SUCH_PATH;
    }
@@ -263,13 +269,30 @@ int  NodeD_getChild(NodeD_T oNParent, size_t ulChildID,
    }
 }
 
+int  NodeD_getFileChildren(NodeD_T oNParent, size_t ulChildID,
+                   Node_T *poNResult) {
+
+   assert(oNParent != NULL);
+   assert(poNResult != NULL);
+
+   /* ulChildID is the index into oNParent->oDChildren */
+   if(ulChildID >= NodeD_getNumFileChildren(oNParent)) {
+      *poNResult = NULL;
+      return NO_SUCH_PATH;
+   }
+   else {
+    /* Check where it exists (which array) then store in poNResult */
+      *poNResult = DynArray_get(oNParent->oDFileChildren, ulChildID);
+      return SUCCESS;
+   }
+}
+
 Node_T NodeD_getParent(NodeD_T oNNode) {
    assert(oNNode != NULL);
 
    return oNNode->oNParent;
 }
 
-/* IMPLEMENT DIFFERENT COMPARE CASES */
 int NodeD_compare(NodeD_T oNFirst, NodeD_T oNSecond) {
    assert(oNFirst != NULL);
    assert(oNSecond != NULL);
