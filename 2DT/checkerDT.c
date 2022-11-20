@@ -72,7 +72,8 @@ Child: (%s)\n",
          oNChild2 = NULL;
          iStatus = Node_getChild(oNNode,j,&oNChild2);
          if (iStatus != SUCCESS) {
-            fprintf(stderr, "getNumChildren claims more children than getChild returns\n");
+            fprintf(stderr, "getNumChildren claims more children than \
+getChild returns\n");
             return FALSE;
          }
          oPChildPath2 = Node_getPath(oNChild2);
@@ -86,7 +87,7 @@ Child: (%s). Child: (%s)\n",
             return FALSE;
          }
 
-         /* dtBad3 invariant: children are not in lexicographic order */
+         /* dtBad3 invariant: children must be in lexicographic order */
          if (!(Path_comparePath(oPChildPath1,oPChildPath2) < 0)) {
             fprintf(stderr, "Children are not in lexicographic order. \
 Child: (%s). Child: (%s)\n",
@@ -96,8 +97,6 @@ Child: (%s). Child: (%s)\n",
          }
       }
    }
-
-   /* Invariant: children of parent should be in lexicographic order */
    return TRUE; 
 }
 
@@ -106,7 +105,7 @@ Child: (%s). Child: (%s)\n",
    Performs a pre-order traversal of the tree rooted at oNNode.
    Takes size_t nodeCount representing the "position" of the current
    node. Increments count to go to the next node recursively.
-   Returns current count or 0 (FALSE) if broken invariant is found.
+   Returns current node count or 0 (FALSE) if broken invariant is found.
 */
 static size_t CheckerDT_treeCheck(Node_T oNNode,size_t nodeCount) {
    size_t ulIndex;
