@@ -293,19 +293,19 @@ Node_T NodeD_getParent(NodeD_T oNNode) {
    return oNNode->oNParent;
 }
 
-int NodeD_compare(NodeD_T oNFirst, NodeD_T oNSecond) {
+int NodeD_compare(NodeD_T oNDNode1, NodeD_T oNDNode2) {
    assert(oNFirst != NULL);
    assert(oNSecond != NULL);
 
-   return Path_comparePath(oNFirst->oPPath, oNSecond->oPPath);
+   return Path_comparePath(oNDNode1->oPPath, oNDNode2->oPPath);
 }
 
 /* compare dir to file, dir always will come before file in definition, make clear in .h file */
-int NodeD_compare(NodeD_T oNFirst, NodeF_T oNSecond) {
+int NodeD_compare(NodeD_T oNDNode1, NodeF_T oNFNode2) {
    assert(oNFirst != NULL);
    assert(oNSecond != NULL);
 
-   return Path_comparePath(oNFirst->oPPath, oNSecond->oPPath);
+   return Path_comparePath(oNDNode1->oPPath, oNFNode2->oPPath);
 }
 
 char *NodeD_toString(NodeD_T oNNode) {
