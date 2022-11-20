@@ -224,6 +224,7 @@ Path_T NodeD_getPath(NodeD_T oNNode) {
    return oNNode->oPPath;
 }
 
+/* MAKE SURE SETTING THE IDS ISNT FUCKED UP */
 boolean NodeD_hasChild(NodeD_T oNParent, Path_T oPPath,
                          size_t *pulChildID) {
    assert(oNParent != NULL);
@@ -250,7 +251,6 @@ size_t NodeD_getNumFileChildren(NodeD_T oNParent) {
    return DynArray_getLength(oNParent->oDFileChildren);
 }
 
-/* NEED TO FIGURE OUT IDs BETWEEN FILE AND DIRS */
 int  NodeD_getDirChild(NodeD_T oNParent, size_t ulChildID,
                    Node_T *poNResult) {
 
