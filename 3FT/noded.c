@@ -292,7 +292,7 @@ int NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
 }
 
 NodeD_T NodeD_getParent(NodeD_T oNdNode) {
-   assert(oNNode != NULL);
+   assert(oNdNode != NULL);
 
    return oNdNode->oNdParent;
 }
