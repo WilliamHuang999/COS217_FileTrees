@@ -48,7 +48,7 @@ static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
     assert(oNdParent != NULL);
     assert(oNdChild != NULL);
 
-    if(DynArray_addAt(oNdParent->odDirChildren, ulIndex, oNdChild))
+    if(DynArray_addAt(oNdParent->oDDirChildren, ulIndex, oNdChild))
         return SUCCESS;
     else
         return MEMORY_ERROR;
@@ -60,14 +60,6 @@ static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
   "greater than" pcSecond, respectively.
 */
 static int NodeD_compareString(const NodeD_T oNdNode1,
-                                 const char *pcSecond) {
-   assert(oNdNode1 != NULL);
-   assert(pcSecond != NULL);
-
-   return Path_compareString(oNdNode1->oPPath, pcSecond);
-}
-
-static int NodeF_compareString(const NodeF_T oNdNode1,
                                  const char *pcSecond) {
    assert(oNdNode1 != NULL);
    assert(pcSecond != NULL);
@@ -136,7 +128,7 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
       }
 
       /* parent must not already have child with this path */
-      if(NodeD_hasChild(oNdParent, oPPath, &ulIndex)) {
+      if(NodeD_hasDirChild(oNdParent, oPPath, &ulIndex)) {
          Path_free(psdNew->oPPath);
          free(psdNew);
          *poNdResult = NULL;
@@ -299,7 +291,7 @@ int NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
    }
 }
 
-Node_T NodeD_getParent(NodeD_T oNdNode) {
+NodeD_T NodeD_getParent(NodeD_T oNdNode) {
    assert(oNNode != NULL);
 
    return oNdNode->oNdParent;
