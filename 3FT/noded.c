@@ -14,10 +14,13 @@
 struct nodeD {
     /* the object corresponding to the node's absolute path */
     Path_T oPPath;
+
     /* this node's parent */
     NodeD_T oNdParent;
+
     /* the object containing links to this node's children that are files */
     DynArray_T oDFileChildren;
+    
     /* the object containg links to this node's children that are directories */
     DynArray_T oDDirChildren;
 };
