@@ -95,7 +95,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T) {
     return SUCCESS;
 }
 
-static int FT_FindDir(const char *pcPath, NodeD_T *poNResult) {
+static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     Path_T oPPath = NULL;
     NodeD_T oNFound = NULL;
     int iStatus;
@@ -165,7 +165,7 @@ int FT_insertDir(const char *pcPath) {
     if(!bIsInitialized)
         return INITIALIZATION_ERROR;
     
-    iStatus = Path_new(pcPath, &opPath);
+    iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS)
         return iStatus;
     
@@ -248,7 +248,7 @@ boolean FT_containsDir(const char *pcPath) {
 
     assert(pcPath != NULL);
 
-    iStatus = FT_findNode(pcPath, &oNFound);
+    iStatus = FT_findDir(pcPath, &oNFound);
     return (boolean) (iStatus == SUCCESS);
 }
 
@@ -269,7 +269,7 @@ int FT_rmDir(const char *pcPath) {
 
     assert(pcPath != NULL);
 
-    iStatus = FT_findNode(pcPath, &oNFound);
+    iStatus = FT_findDir(pcPath, &oNFound);
 
     if(iStatus != SUCCESS)
         return iStatus;
@@ -308,7 +308,7 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     if(!bIsInitialized)
         return INITIALIZATION_ERROR;
     
-    iStatus = Path_new(pcPath, &opPath);
+    iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS)
         return iStatus;
     
@@ -397,7 +397,31 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
   Returns TRUE if the FT contains a file with absolute path
   pcPath and FALSE if not or if there is an error while checking.
 */
-boolean FT_containsFile(const char *pcPath);
+boolean FT_containsFile(const char *pcPath) {
+    int iStatus;
+    Path_T oPPath = NULL;
+    NodeD_T oNParent = NULL;
+    NodeF_T oNFound = NULL;
+    size_t ulChildID;
+
+    assert(pcPath != NULL);
+
+    iStatus = Path_new(pcPath, &oPPath);
+    if (iStatus != SUCCESS)
+        return (boolean) (iStatus == SUCCESS);
+    
+    /* find the closest directory ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
+    iStatus= FT_traversePath(oPPath, &oNParent);
+    if (iStatus != SUCCESS)
+    {
+        Path_free(oPPath);
+        return (boolean) (iStatus == SUCCESS);
+    }
+    
+    iStatus = NodeD_hasFileChild(oNParent, oPPath, ulChildID);
+    
+    return (boolean) (iStatus == SUCCESS);
+}
 
 /*
   Removes the FT file with absolute path pcPath.
