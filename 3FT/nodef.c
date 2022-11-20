@@ -35,7 +35,7 @@ int NodeF_new(Path_T oPPath, NodeF_T *poNfResult) {
    }
 
    /* Allocate mem for new node and check for enough mem */
-   oNfNew = (oNfNew)malloc(sizeof(struct nodeF));
+   oNfNew = (NodeF_T)malloc(sizeof(struct nodeF));
    if(oNfNew == NULL) {
       *poNfResult = NULL;
       return MEMORY_ERROR;
@@ -96,10 +96,10 @@ char *NodeF_toString(NodeF_T oNfNode) {
    assert(oNfNode != NULL);
 
    /* Allocate mem for pcResult and check if enough mem */
-   pcResult = malloc(Path_getStrLength(Node_getPath(oNfNode))+1);
+   pcResult = malloc(Path_getStrLength(NodeF_getPath(oNfNode))+1);
    if(pcResult == NULL) {
       return NULL;
    }
    /* Copy path name to pcResult and return the copy */
-   return strcpy(pcResult, Path_getPathname(Node_getPath(oNfNode)));
+   return strcpy(pcResult, Path_getPathname(NodeF_getPath(oNfNode)));
 }
