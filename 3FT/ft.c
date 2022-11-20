@@ -95,6 +95,49 @@ static int FT_traversePath(Path_T oPPath, NodeD_T) {
     return SUCCESS;
 }
 
+static int FT_FindDir(const char *pcPath, NodeD_T *poNResult) {
+    Path_T oPPath = NULL;
+    NodeD_T oNFound = NULL;
+    int iStatus;
+
+    assert(pcPath != NULL);
+    assert(poNResult != NULL);
+
+    if(!bIsInitialized) {
+        *poNResult = NULL;
+        return INITIALIZATION_ERROR;
+    }
+
+    iStatus = Path_new(pcPath, &oPPath);
+    if(iStatus != SUCCESS) {
+        *poNResult = NULL;
+        return iStatus;
+    }
+
+    iStatus = FT_traversePath(oPPath, &oNFound);
+    if(iStatus != SUCCESS)
+    {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return iStatus;
+    }
+
+    if(oNFound == NULL) {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return NO_SUCH_PATH;
+    }
+
+    if(Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return NO_SUCH_PATH;
+    }
+
+    Path_free(oPPath);
+    *poNResult = oNFound;
+    return SUCCESS;
+}
 
 /* ================================================================== */
 
