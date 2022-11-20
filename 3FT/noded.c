@@ -29,7 +29,7 @@ struct nodeD {
 /*
   Links new file child oNfChild into oNdParent's file children array at index ulIndex. Returns SUCCESS if the new file child was added successfully, or  MEMORY_ERROR if allocation fails adding oNfChild to the file children array.
 */
-static int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild,
+/*static int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild,
 size_t ulIndex) {
    assert(oNdParent != NULL);
    assert(oNfChild != NULL);
@@ -38,7 +38,7 @@ size_t ulIndex) {
       return SUCCESS;
    else
       return MEMORY_ERROR;
-}
+}*/
 
 /*
   Links new directory child oNdChild into oNdParent's directory children array at index ulIndex. Returns SUCCESS if the new directory child was added successfully, or  MEMORY_ERROR if allocation fails adding oNdChild to the directory children array.
