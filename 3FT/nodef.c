@@ -90,6 +90,15 @@ int NodeF_compare(NodeF_T oNfNode1, NodeF_T oNfNode2) {
 }
 
 /* ================================================================== */
+int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond) {
+   assert(oNfNode1 != NULL);
+   assert(pcSecond != NULL);
+
+   return Path_compareString(oNfNode1->oPPath, pcSecond);
+}
+
+
+/* ================================================================== */
 char *NodeF_toString(NodeF_T oNfNode) {
    char *pcResult;   /* String representation of oNFNode */
 

@@ -39,6 +39,13 @@ Path_T NodeF_getPath(NodeF_T oNfNode);
 int NodeF_compare(NodeF_T oNfNode1, NodeF_T oNfNode2);
 
 /*
+  Compares the string representation of a file node oNfNode1 with a string pcSecond representing a file node's path.
+  Returns <0, 0, or >0 if oNdNode1 is "less than", "equal to", or
+  "greater than" pcSecond, respectively.
+*/
+int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond);
+
+/*
   Returns a string representation for oNFNode, or NULL if
   there is an allocation error.
 
