@@ -263,11 +263,27 @@ boolean FT_containsDir(const char *pcPath) {
   * NOT_A_DIRECTORY if pcPath is in the FT as a file not a directory
   * MEMORY_ERROR if memory could not be allocated to complete request
 */
-int FT_rmDir(const char *pcPath);
+int FT_rmDir(const char *pcPath) {
+    int iStatus;
+    Node_T oNFound = NULL;
+
+    assert(pcPath != NULL);
+
+    iStatus = FT_findNode(pcPath, &oNFound);
+
+    if(iStatus != SUCCESS)
+        return iStatus;
+
+    ulCount -= NodeD_free(oNFound);
+    if(ulCount == 0)
+        oNRoot = NULL;
+
+    return SUCCESS;
+}
 
 
 /*
-   Inserts a new file into the FT with absolute path pcPath, with
+   Inserts a new  file into the FT with absolute path pcPath, with
    file contents pvContents of size ulLength bytes.
    Returns SUCCESS if the new file is inserted successfully.
    Otherwise, returns:
@@ -279,8 +295,103 @@ int FT_rmDir(const char *pcPath);
    * ALREADY_IN_TREE if pcPath is already in the FT (as dir or file)
    * MEMORY_ERROR if memory could not be allocated to complete request
 */
-int FT_insertFile(const char *pcPath, void *pvContents,
-                  size_t ulLength);
+int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
+    int iStatus;
+    Path_T oPPath = NULL;
+    NodeD_T oNFirstNew = NULL;
+    NodeD_T oNParent = NULL;
+    size_t ulDepth, ulIndex, ulChildID;
+    size_t ulNewNodes = 0; 
+
+
+    /* validate pcPath and generate a Path_T for it */
+    if(!bIsInitialized)
+        return INITIALIZATION_ERROR;
+    
+    iStatus = Path_new(pcPath, &opPath);
+    if(iStatus != SUCCESS)
+        return iStatus;
+    
+    /* find the closest directory ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
+    iStatus= FT_traversePath(oPPath, &oNParent);
+    if(iStatus != SUCCESS)
+    {
+        Path_free(oPPath);
+        return iStatus;
+    }
+
+    /* no ancestor node found, so if root is not NULL,
+      pcPath isn't underneath root. */
+    if(oNParent == NULL && oNRoot != NULL) {
+        Path_free(oPPath);
+        return CONFLICTING_PATH;
+    }
+
+    ulDepth = Path_getDepth(oPPath);
+    if(oNParent == NULL) /* new root! */
+        ulIndex = 1;
+    else {
+        ulIndex = Path_getDepth(Node_getPath(oNParent)) + 1;
+        /* the file is already a child of its parent directory */
+        if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
+            Path_free(oPPath);
+            return ALREADY_IN_TREE;
+        }
+    }
+
+    /* starting at oNParent, build rest of the directories one by one but not the file itself yet, hence < not <= */
+    while (ulIndex < ulDepth) {
+        Path_T oPPrefix = NULL;
+        NodeD_T oNNewNode = NULL;
+
+        /* generate a Path_T for this level */
+        iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
+        if (iStatus != SUCCESS) {
+            Path_free(oPPath);
+            if (oNFirstNew != NULL)
+                (void) NodeD_free(oNFirstNew);
+            return iStatus;
+        }
+
+        /* insert the new node for this level */
+        iStatus = NodeD_new(oPPrefix, oNParent, &oNNewNode);
+        if(iStatus != SUCCESS) {
+            Path_free(oPPath);
+            Path_free(oPPrefix);
+            if(oNFirstNew != NULL)
+                (void) NodeD_free(oNFirstNew);
+            return iStatus;
+        }
+
+        /* set up for next level */
+        Path_free(oPPrefix);
+        oNParent = oNNewNode;
+        ulNewNodes++;
+        if(oNFirstNew == NULL)
+            oNFirstNew = oNParent;
+        ulIndex++;
+    }
+
+    /* Inserting file as leaf */
+    NodeF_T oNNewFile = NULL;
+    iStatus = NodeF_new(oPPath, &oNNewFile);
+        if(iStatus != SUCCESS) {
+            Path_free(oPPath);
+            Path_free(oPPrefix);
+            if(oNFirstNew != NULL)
+                (void) NodeD_free(oNFirstNew);
+            return iStatus;
+        }
+    ulNewNodes++;
+
+    Path_free(oPPath);
+    /* update DT state variables to reflect insertion */
+    if(oNRoot == NULL)
+        oNRoot = oNFirstNew;
+    ulCount += ulNewNodes;
+
+    return SUCCESS;
+}
 
 /*
   Returns TRUE if the FT contains a file with absolute path
