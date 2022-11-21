@@ -520,7 +520,21 @@ void *FT_getFileContents(const char *pcPath) {
   Returns NULL if unable to complete the request for any reason.
 */
 void *FT_replaceFileContents(const char *pcPath, void *pvNewContents, size_t ulNewLength) {
-    
+    int iStatus;
+    void *pvOldContents = NULL;
+    NodeF_T oNFound = NULL;
+
+    assert(pcPath != NULL);
+
+    iStatus = FT_findFile(pcPath, &oNFound);
+    if(iStatus != SUCCESS)
+        return NULL;
+
+    pvOldContents = oNFound->pvContents;
+    oNFound->pvContents = pvNewContents;
+    oNFound->ulLength = ulNewLength;
+
+    return pvOldContents;
 }
 
                             
