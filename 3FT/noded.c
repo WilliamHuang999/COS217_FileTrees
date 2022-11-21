@@ -380,7 +380,7 @@ char *NodeD_toString(NodeD_T oNdNode) {
    for (i = 0; i < numFileChildren; i++) {
       oNfChild = DynArray_get(oNdNode->oDFileChildren,i);
       strcat(pcResult, Path_getPathname(NodeF_getPath(oNfChild)));
-      /*strcat(pcResult,"\n");*/
+      strcat(pcResult,"\n");
    }
 
    return pcResult;
