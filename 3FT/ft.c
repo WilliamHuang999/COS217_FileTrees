@@ -552,6 +552,12 @@ int FT_rmFile(const char *pcPath) {
 
     assert(pcPath != NULL);
 
+    /* pcPath is Path of a dir not a file */
+    iStatus = FT_findDir(pcPath,&oNdParent)
+    if(iStatus == SUCCESS) {
+        return NOT_A_FILE;
+    }
+
     /* Find file and assign to oNFound */
     iStatus = FT_findFile(pcPath, &oNFound);
     if(iStatus != SUCCESS)
