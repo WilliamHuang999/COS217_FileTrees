@@ -360,7 +360,8 @@ int FT_rmDir(const char *pcPath) {
     assert(pcPath != NULL);
 
     /* pcPath is a path to a file */
-    if(FT_findFile(pcPath,&oNfFound)) {
+    iStatus = FT_findFile(pcPath,&oNfFound);
+    if (iStatus == SUCCESS) {
         return NOT_A_DIRECTORY;
     }
 
