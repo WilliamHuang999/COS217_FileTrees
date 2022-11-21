@@ -585,7 +585,16 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
   Returns INITIALIZATION_ERROR if already initialized,
   and SUCCESS otherwise.
 */
-int FT_init(void);
+int FT_init(void) {
+    if(bIsInitialized)
+        return INITIALIZATION_ERROR;
+
+    bIsInitialized = TRUE;
+    oNRoot = NULL;
+    ulCount = 0;
+
+    return SUCCESS;
+}
 
 /*
   Removes all contents of the data structure and
