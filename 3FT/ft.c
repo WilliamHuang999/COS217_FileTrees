@@ -400,6 +400,7 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     while (ulIndex < ulDepth) {
         Path_T oPPrefix = NULL;
         NodeD_T oNNewNode = NULL;
+        NodeF_T oNNewFile = NULL;
 
         /* generate a Path_T for this level */
         iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
@@ -430,7 +431,6 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     }
 
     /* Inserting file as leaf */
-    NodeF_T oNNewFile = NULL;
     iStatus = NodeF_new(oPPath, &oNNewFile);
         if(iStatus != SUCCESS) {
             Path_free(oPPath);
