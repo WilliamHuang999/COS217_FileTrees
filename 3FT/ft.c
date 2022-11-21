@@ -643,19 +643,19 @@ int FT_init(void) {
   and SUCCESS otherwise.
 */
 int FT_destroy(void) {
-   if(!bIsInitialized)
-      return INITIALIZATION_ERROR;
+    if(!bIsInitialized)
+        return INITIALIZATION_ERROR;
 
-   if(oNRoot) {
-      ulDirCount -= NodeD_free(oNRoot);
-      oNRoot = NULL;
-   }
+    if(oNRoot) {
+        ulDirCount -= NodeD_free(oNRoot);
+        oNRoot = NULL;
+    }
 
-   assert(ulDirCount == 0);
+    assert(ulDirCount == 0);
 
-   bIsInitialized = FALSE;
+    bIsInitialized = FALSE;
 
-   return SUCCESS;
+    return SUCCESS;
 }
 
 /* ================================================================== */
@@ -671,22 +671,22 @@ int FT_destroy(void) {
 */
 
 static size_t FT_preOrderTraversal(NodeD_T n, DynArray_T d, size_t i) {
-   size_t c;
+    size_t c;
 
-   assert(d != NULL);
+    assert(d != NULL);
 
-   if(n != NULL) {
-      (void) DynArray_set(d, i, n);
-      i++;
-      for(c = 0; c < NodeD_getNumDirChildren(n); c++) {
-         int iStatus;
-         NodeD_T oNdChild = NULL;
-         iStatus = NodeD_getDirChild(n,c, &oNdChild);
-         assert(iStatus == SUCCESS);
-         i = FT_preOrderTraversal(oNdChild, d, i);
-      }
-   }
-   return i;
+    if(n != NULL) {
+        (void) DynArray_set(d, i, n);
+        i++;
+        for(c = 0; c < NodeD_getNumDirChildren(n); c++) {
+            int iStatus;
+            NodeD_T oNdChild = NULL;
+            iStatus = NodeD_getDirChild(n,c, &oNdChild);
+            assert(iStatus == SUCCESS);
+            i = FT_preOrderTraversal(oNdChild, d, i);
+        }
+    }
+    return i;
 }
 
 /*
@@ -696,15 +696,15 @@ static size_t FT_preOrderTraversal(NodeD_T n, DynArray_T d, size_t i) {
   Also accumulates the lengths of oNdNode's children Paths.
 */
 static void FT_strlenAccumulate(NodeD_T oNdNode, size_t *pulAcc) {
-   char* pcNodeString;
+    char* pcNodeString;
 
-   assert(pulAcc != NULL);
+    assert(pulAcc != NULL);
 
-   if(oNdNode != NULL) {
-      pcNodeString = NodeD_toString(oNdNode);
-      *pulAcc += strlen(pcNodeString) + 1;
-      free(pcNodeString);      
-   }
+    if(oNdNode != NULL) {
+        pcNodeString = NodeD_toString(oNdNode);
+        *pulAcc += strlen(pcNodeString);
+        free(pcNodeString);      
+    }
 }
 
 /*
@@ -713,44 +713,44 @@ static void FT_strlenAccumulate(NodeD_T oNdNode, size_t *pulAcc) {
   always adds one newline at the end of the concatenated string.
 */
 static void FT_strcatAccumulate(NodeD_T oNdNode, char *pcAcc) {
-   char* pcNodeString;
+    char* pcNodeString;
 
-   assert(pcAcc != NULL);
+    assert(pcAcc != NULL);
 
-   if(oNdNode != NULL) {
-      pcNodeString = NodeD_toString(oNdNode);
-      strcat(pcAcc, pcNodeString);
-      /*strcat(pcAcc, "\n");*/
-      free(pcNodeString);
-   }
+    if(oNdNode != NULL) {
+        pcNodeString = NodeD_toString(oNdNode);
+        strcat(pcAcc, pcNodeString);
+        free(pcNodeString);
+    }
 }
 
 /* ================================================================== */
 char *FT_toString(void) {
-   DynArray_T nodes;
-   size_t totalStrlen = 1;
-   char *result = NULL;
+    DynArray_T nodes;
+    size_t totalStrlen = 1;
+    char *result = NULL;
 
-   if(!bIsInitialized)
-      return NULL;
+    if(!bIsInitialized)
+        return NULL;
 
-   nodes = DynArray_new(ulDirCount);
-   (void) FT_preOrderTraversal(oNRoot, nodes, 0);
+    nodes = DynArray_new(ulDirCount);
+    (void) FT_preOrderTraversal(oNRoot, nodes, 0);
 
-   DynArray_map(nodes, (void (*)(void *, void*)) FT_strlenAccumulate,
-                (void*) &totalStrlen);
+    DynArray_map(nodes, (void (*)(void *, void*)) FT_strlenAccumulate,
+                    (void*) &totalStrlen);
 
-   result = malloc(totalStrlen);
-   if(result == NULL) {
-      DynArray_free(nodes);
-      return NULL;
-   }
-   *result = '\0';
+    result = malloc(totalStrlen + 1);
+    if(result == NULL) {
+        DynArray_free(nodes);
+        return NULL;
+    }
+    *result = '\0';
 
-   DynArray_map(nodes, (void (*)(void *, void*)) FT_strcatAccumulate,
-                (void *) result);
+    DynArray_map(nodes, (void (*)(void *, void*)) FT_strcatAccumulate,
+    (void *) result);
 
-   DynArray_free(nodes);
+    strcat(result,"\n");
+    DynArray_free(nodes);
 
-   return result;
+    return result;
 }
