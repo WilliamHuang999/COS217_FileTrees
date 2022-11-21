@@ -18,18 +18,26 @@
 /*
   A File Tree is a representation of a hierarchy of directories and
   files: the File Tree is rooted at a directory, directories
-  may be internal nodes or leaves, and files are always leaves. It is represented as an AO with 3 state variables:
+  may be internal nodes or leaves, and files are always leaves. It is 
+  represented as an AO with 3 state variables:
 */
 
-/* 1. a flag for being in an initialized state (TRUE) or not (FALSE) */
+/* Variables to keep track of FT characteristics: */
+/* 1. Flag for being in initialized state (TRUE) or not (FALSE) */
 static boolean bIsInitialized;
-/* 2. a pointer to the root node in the hierarchy */
+/* 2. Pointer to root directory node in the FT */
 static NodeD_T oNRoot;
-/* 3. a counter of the number of nodes in the hierarchy */
+/* 3. Counter of number of directories (not including files) in FT */
 static size_t ulCount;
 
+/* ================================================================== */
 /*
-  Traverses the FT starting at the root to the farthest possible DIRECTORY following absolute path oPPath. If able to traverse, returns an int SUCCESS status and sets *poNFurthest to the furthest directory node reached (which may be only a prefix of oPPath, or even NULL if the root is NULL). Otherwise, sets *poNFurthest to NULL and returns with status:
+  Traverses the FT starting at the root to the farthest possible 
+  DIRECTORY following absolute path oPPath. If able to traverse, 
+  returns an int SUCCESS status and sets *poNFurthest to the furthest 
+  directory node reached (which may be only a prefix of oPPath, or even 
+  NULL if the root is NULL). Otherwise, sets *poNFurthest to NULL and 
+  returns with status:
   * CONFLICTING_PATH if the root's path is not a prefix of oPPath
   * MEMORY_ERROR if memory could not be allocated to complete request
 
@@ -69,7 +77,9 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
 
     oNCurr = oNRoot;
     ulDepth = Path_getDepth(oPPath);
-    /* Increment over depths until at closest ancestor directory of last node in the path. If the last node is a directory, it will stop there. */
+    /* Increment over depths until at closest ancestor directory of 
+    last node in the path. If the last node is a directory, it will 
+    stop there. */
     for (i = 2; i <= ulDepth; i++) {
         iStatus = Path_prefix(oPPath, i, &oPPrefix);
         if(iStatus != SUCCESS) {
@@ -95,6 +105,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
     return SUCCESS;
 }
 
+/* ================================================================== */
 static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     Path_T oPPath = NULL;
     NodeD_T oNFound = NULL;
@@ -139,6 +150,7 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     return SUCCESS;
 }
 
+/* ================================================================== */
 static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     int iStatus;
     Path_T oPPath = NULL;
@@ -175,7 +187,7 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
         return NO_SUCH_PATH;
     }
 
-    iStatus = Path_prefix(oPPath, Path_getDepth(oPPath) - 1, &oPParentPath);
+    iStatus = Path_prefix(oPPath,Path_getDepth(oPPath)-1,&oPParentPath);
     if(iStatus != SUCCESS) {
         *poNResult = NULL;
         return iStatus;
@@ -205,7 +217,6 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
 }
 
 /* ================================================================== */
-
 /*
    Inserts a new directory into the FT with absolute path pcPath.
    Returns SUCCESS if the new directory is inserted successfully.
@@ -234,7 +245,8 @@ int FT_insertDir(const char *pcPath) {
     if(iStatus != SUCCESS)
         return iStatus;
     
-    /* find the closest directory ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
+    /* find the closest directory ancestor of oPPath already in the 
+    tree, ancestor must be a directory by definition of file tree */
     iStatus= FT_traversePath(oPPath, &oNCurr);
     if(iStatus != SUCCESS)
     {
@@ -255,7 +267,8 @@ int FT_insertDir(const char *pcPath) {
     else {
         ulIndex = Path_getDepth(NodeD_getPath(oNCurr)) + 1;
         /* oNCurr is the node we're trying to insert */
-        if (ulIndex == ulDepth + 1 && !Path_comparePath(oPPath, NodeD_getPath(oNCurr))) {
+        if (ulIndex == ulDepth + 1 && !Path_comparePath(oPPath, 
+        NodeD_getPath(oNCurr))) {
             Path_free(oPPath);
             return ALREADY_IN_TREE;
         }
@@ -303,6 +316,7 @@ int FT_insertDir(const char *pcPath) {
     return SUCCESS;
 }   
 
+/* ================================================================== */
 /*
   Returns TRUE if the FT contains a directory with absolute path
   pcPath and FALSE if not or if there is an error while checking.
@@ -317,6 +331,7 @@ boolean FT_containsDir(const char *pcPath) {
     return (boolean) (iStatus == SUCCESS);
 }
 
+/* ================================================================== */
 /*
   Removes the FT hierarchy (subtree) at the directory with absolute
   path pcPath. Returns SUCCESS if found and removed.
@@ -346,7 +361,7 @@ int FT_rmDir(const char *pcPath) {
     return SUCCESS;
 }
 
-
+/* ================================================================== */
 /*
    Inserts a new  file into the FT with absolute path pcPath, with
    file contents pvContents of size ulLength bytes.
@@ -360,7 +375,8 @@ int FT_rmDir(const char *pcPath) {
    * ALREADY_IN_TREE if pcPath is already in the FT (as dir or file)
    * MEMORY_ERROR if memory could not be allocated to complete request
 */
-int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
+int FT_insertFile(const char *pcPath, void *pvContents, size_t 
+ulLength) {
     int iStatus;
     Path_T oPPath = NULL; 
     NodeD_T oNFirstNew = NULL;
@@ -380,7 +396,8 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     if(Path_getDepth(oPPath) == 1)
         return CONFLICTING_PATH;
     
-    /* find the closest directory ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
+    /* find the closest directory ancestor of oPPath already in the 
+    tree, ancestor must be a directory by definition of file tree */
     iStatus= FT_traversePath(oPPath, &oNParent);
     if(iStatus != SUCCESS)
     {
@@ -401,13 +418,16 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     else {
         ulIndex = Path_getDepth(NodeD_getPath(oNParent)) + 1;
         /* the file is already a child of its parent directory */
-        if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID) || NodeD_hasDirChild(oNParent, oPPath, &ulChildID) || (Path_comparePath(NodeD_getPath(oNParent), oPPath) == 0)) {
+        if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID) || 
+        NodeD_hasDirChild(oNParent, oPPath, &ulChildID) || 
+        (Path_comparePath(NodeD_getPath(oNParent), oPPath) == 0)) {
             Path_free(oPPath);
             return ALREADY_IN_TREE;
         }
     }
 
-    /* starting at oNParent, build rest of the directories one by one but not the file itself yet, hence < not <= */
+    /* starting at oNParent, build rest of the directories one by one 
+    but not the file itself yet, hence < not <= */
     while (ulIndex < ulDepth) {
         Path_T oPPrefix = NULL;
         NodeD_T oNNewNode = NULL;
@@ -470,6 +490,7 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     return SUCCESS;
 }
 
+/* ================================================================== */
 /*
   Returns TRUE if the FT contains a file with absolute path
   pcPath and FALSE if not or if there is an error while checking.
@@ -484,6 +505,7 @@ boolean FT_containsFile(const char *pcPath) {
     return (boolean) (iStatus == SUCCESS);
 }
 
+/* ================================================================== */
 /*
   Removes the FT file with absolute path pcPath.
   Returns SUCCESS if found and removed.
@@ -513,6 +535,7 @@ int FT_rmFile(const char *pcPath) {
     return SUCCESS;
 }
 
+/* ================================================================== */
 /*
   Returns the contents of the file with absolute path pcPath.
   Returns NULL if unable to complete the request for any reason.
@@ -533,13 +556,15 @@ void *FT_getFileContents(const char *pcPath) {
     return NodeF_getContents(oNFound);
 }
 
+/* ================================================================== */
 /*
   Replaces current contents of the file with absolute path pcPath with
   the parameter pvNewContents of size ulNewLength bytes.
   Returns the old contents if successful. (Note: contents may be NULL.)
   Returns NULL if unable to complete the request for any reason.
 */
-void *FT_replaceFileContents(const char *pcPath, void *pvNewContents, size_t ulNewLength) {
+void *FT_replaceFileContents(const char *pcPath, void *pvNewContents, 
+size_t ulNewLength) {
     int iStatus;
     NodeF_T oNFound = NULL;
 
@@ -553,8 +578,7 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents, size_t ulN
     return NodeF_replaceContents(oNFound,pvNewContents);
 }
 
-                            
-
+/* ================================================================== */
 /*
   Returns SUCCESS if pcPath exists in the hierarchy,
   Otherwise, returns:
@@ -594,6 +618,7 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
     }
 }
 
+/* ================================================================== */
 /*
   Sets the FT data structure to an initialized state.
   The data structure is initially empty.
@@ -611,6 +636,7 @@ int FT_init(void) {
     return SUCCESS;
 }
 
+/* ================================================================== */
 /*
   Removes all contents of the data structure and
   returns it to an uninitialized state.
@@ -662,7 +688,6 @@ static size_t FT_preOrderTraversal(NodeD_T n, DynArray_T d, size_t i) {
    return i;
 }
 
-
 /*
   Alternate version of strlen that uses pulAcc as an in-out parameter
   to accumulate a string length, rather than returning the length of
@@ -681,10 +706,10 @@ static void FT_strlenAccumulate(NodeD_T oNdNode, size_t *pulAcc) {
    }
 }
 
-
 /*
   Alternate version of strcat that inverts the typical argument
-  order, appending oNdNode's string represenation onto pcAcc, and also always adds one newline at the end of the concatenated string.
+  order, appending oNdNode's string represenation onto pcAcc, and also 
+  always adds one newline at the end of the concatenated string.
 */
 static void FT_strcatAccumulate(NodeD_T oNdNode, char *pcAcc) {
    char* pcNodeString;
@@ -699,18 +724,7 @@ static void FT_strcatAccumulate(NodeD_T oNdNode, char *pcAcc) {
    }
 }
 
-/*
-  Returns a string representation of the file tree data structure, or
-  NULL if the structure is not initialized or there is an allocation
-  error.
-
-  The representation is depth-first with files
-  before directories at any given level, and nodes
-  of the same type ordered lexicographically.
-
-  Allocates memory for the returned string,
-  which is then owned by client!
-*/
+/* ================================================================== */
 char *FT_toString(void) {
    DynArray_T nodes;
    size_t totalStrlen = 1;

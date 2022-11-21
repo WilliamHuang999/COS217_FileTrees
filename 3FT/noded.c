@@ -18,15 +18,21 @@ struct nodeD {
     /* this node's parent */
     NodeD_T oNdParent;
 
-    /* the object containing links to this node's children that are files */
+    /* the object containing links to this node's children that are 
+    files */
     DynArray_T oDFileChildren;
 
-    /* the object containg links to this node's children that are directories */
+    /* the object containg links to this node's children that are 
+    directories */
     DynArray_T oDDirChildren;
 };
 
+/* ================================================================== */
 /*
-  Links new directory child oNdChild into oNdParent's directory children array at index ulIndex. Returns SUCCESS if the new directory child was added successfully, or  MEMORY_ERROR if allocation fails adding oNdChild to the directory children array.
+  Links new directory child oNdChild into oNdParent's directory 
+  children array at index ulIndex. Returns SUCCESS if the new directory 
+  child was added successfully, or  MEMORY_ERROR if allocation fails 
+  adding oNdChild to the directory children array.
 */
 static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
                         size_t ulIndex) {
@@ -40,7 +46,8 @@ static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
 }
 
 /*
-  Compares the string representation of a directory node oNdNode1 with a string pcSecond representing a directory node's path.
+  Compares the string representation of a directory node oNdNode1 with 
+  a string pcSecond representing a directory node's path.
   Returns <0, 0, or >0 if oNdNode1 is "less than", "equal to", or
   "greater than" pcSecond, respectively.
 */
@@ -52,8 +59,13 @@ static int NodeD_compareString(const NodeD_T oNdNode1,
    return Path_compareString(oNdNode1->oPPath, pcSecond);
 }
 
+/* ================================================================== */
+
 /*
-  Creates a new directory node with path oPPath and directory parent oNdParent.  Returns an int SUCCESS status and sets *poNdResult to be the new directory node if successful. Otherwise, sets *poNdResult to NULL and returns status:
+  Creates a new directory node with path oPPath and directory parent 
+  oNdParent.  Returns an int SUCCESS status and sets *poNdResult to be 
+  the new directory node if successful. Otherwise, sets *poNdResult to 
+  NULL and returns status:
   * MEMORY_ERROR if memory could not be allocated to complete request
   * CONFLICTING_PATH if oNdParent's path is not an ancestor of oPPath
   * NO_SUCH_PATH if oPPath is of depth 0
@@ -160,7 +172,9 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
    return SUCCESS;
 }
 
-int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild, size_t ulIndex) {
+/* ================================================================== */
+int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild, size_t 
+ulIndex) {
    assert(oNdParent != NULL);
    assert(oNfChild != NULL);
 
@@ -170,7 +184,7 @@ int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild, size_t ulIndex) {
       return MEMORY_ERROR;
 }
 
-
+/* ================================================================== */
 size_t NodeD_free(NodeD_T oNdNode) {
    size_t ulIndex;
    size_t ulCount = 0;
@@ -209,12 +223,14 @@ size_t NodeD_free(NodeD_T oNdNode) {
    return ulCount;
 }
 
+/* ================================================================== */
 Path_T NodeD_getPath(NodeD_T oNdNode) {
    assert(oNdNode != NULL);
 
    return oNdNode->oPPath;
 }
 
+/* ================================================================== */
 boolean NodeD_hasDirChild(NodeD_T oNdParent, Path_T oPPath,
                          size_t *pulChildID) {
    assert(oNdParent != NULL);
@@ -227,6 +243,7 @@ boolean NodeD_hasDirChild(NodeD_T oNdParent, Path_T oPPath,
             (int (*)(const void*,const void*)) NodeD_compareString));
 }
 
+/* ================================================================== */
 boolean NodeD_hasFileChild(NodeD_T oNdParent, Path_T oPPath,
                          size_t *pulChildID) {
    assert(oNdParent != NULL);
@@ -239,18 +256,21 @@ boolean NodeD_hasFileChild(NodeD_T oNdParent, Path_T oPPath,
             (int (*)(const void*,const void*)) NodeF_compareString));
 }
 
+/* ================================================================== */
 size_t NodeD_getNumDirChildren(NodeD_T oNdParent) {
    assert(oNdParent != NULL);
 
    return DynArray_getLength(oNdParent->oDDirChildren);
 }
 
+/* ================================================================== */
 size_t NodeD_getNumFileChildren(NodeD_T oNdParent) {
    assert(oNdParent != NULL);
 
    return DynArray_getLength(oNdParent->oDFileChildren);
 }
 
+/* ================================================================== */
 int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
                    NodeD_T *poNdResult) {
 
@@ -269,6 +289,7 @@ int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
    }
 }
 
+/* ================================================================== */
 int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
                    NodeF_T *poNfResult) {
 
@@ -287,12 +308,14 @@ int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
    }
 }
 
+/* ================================================================== */
 NodeD_T NodeD_getParent(NodeD_T oNdNode) {
    assert(oNdNode != NULL);
 
    return oNdNode->oNdParent;
 }
 
+/* ================================================================== */
 int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2) {
    assert(oNdNode1 != NULL);
    assert(oNdNode2 != NULL);
@@ -300,13 +323,13 @@ int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2) {
    return Path_comparePath(oNdNode1->oPPath, oNdNode2->oPPath);
 }
 
-/* change str accumulate functions. getpath change to tostring */
+/* ================================================================== */
 char *NodeD_toString(NodeD_T oNdNode) {
    char *pcResult;  /* Resulting string representation to be returned */
    size_t totalStrlen; /* Total string length of pcResult */
    size_t i;   /* Index to iterate thru file children */
    size_t numFileChildren; /* Number of file children of directory */
-   NodeF_T oNfChild;
+   NodeF_T oNfChild; /* File child of oNdNode*/
 
    assert(oNdNode != NULL);
 

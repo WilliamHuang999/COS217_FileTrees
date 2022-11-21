@@ -97,7 +97,6 @@ int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond) {
    return Path_compareString(oNfNode1->oPPath, pcSecond);
 }
 
-
 /* ================================================================== */
 char *NodeF_toString(NodeF_T oNfNode) {
    char *copyPath;   /* String representation of oNFNode */
@@ -113,18 +112,21 @@ char *NodeF_toString(NodeF_T oNfNode) {
    return strcpy(copyPath, Path_getPathname(NodeF_getPath(oNfNode)));
 }
 
+/* ================================================================== */
 void *NodeF_getContents(NodeF_T oNfNode) {
    assert(oNfNode != NULL);
 
    return oNfNode->pvContents;
 }
 
+/* ================================================================== */
 size_t NodeF_getLength(NodeF_T oNfNode) {
    assert(oNfNode != NULL);
 
    return oNfNode->ulLength;
 }
 
+/* ================================================================== */
 void *NodeF_replaceContents(NodeF_T oNfNode, void* pvNewContents) {
    void *pvOldContents;
    assert(oNfNode != NULL);
@@ -134,6 +136,7 @@ void *NodeF_replaceContents(NodeF_T oNfNode, void* pvNewContents) {
    return pvOldContents;
 }
 
+/* ================================================================== */
 size_t NodeF_replaceLength(NodeF_T oNfNode, size_t ulNewLength) {
    size_t ulOldLength;
    assert(oNfNode != NULL);
