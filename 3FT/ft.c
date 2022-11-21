@@ -510,7 +510,6 @@ ulLength) {
             (void) NodeD_free(oNFirstNew);
         return iStatus; 
     }
-    ulNewNodes++;
 
     Path_free(oPPath);
     /* update DT state variables to reflect insertion */
