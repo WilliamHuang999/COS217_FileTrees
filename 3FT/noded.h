@@ -36,6 +36,12 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult);
 */
 size_t NodeD_free(NodeD_T oNdNode);
 
+/*
+  Links new file child oNfChild into oNdParent's file children array at index ulIndex. Returns SUCCESS if the new directory child was added successfully, or  MEMORY_ERROR if allocation fails adding oNdChild to the directory children array.
+*/
+int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild, size_t ulIndex);
+
+
 /* Returns the path object representing oNDNode's absolute path. */
 Path_T NodeD_getPath(NodeD_T oNdNode);
 
