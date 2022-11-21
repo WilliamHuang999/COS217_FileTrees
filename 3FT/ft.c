@@ -500,7 +500,18 @@ int FT_rmFile(const char *pcPath) {
   Note: checking for a non-NULL return is not an appropriate
   contains check, because the contents of a file may be NULL.
 */
-void *FT_getFileContents(const char *pcPath);
+void *FT_getFileContents(const char *pcPath) {
+    int iStatus;
+    NodeF_T oNFound = NULL;
+
+    assert(pcPath != NULL);
+
+    iStatus = FT_findFile(pcPath, &oNFound);
+    if(iStatus != SUCCESS)
+        return NULL;
+
+    return oNFound->pvContents;
+}
 
 /*
   Replaces current contents of the file with absolute path pcPath with
@@ -508,8 +519,11 @@ void *FT_getFileContents(const char *pcPath);
   Returns the old contents if successful. (Note: contents may be NULL.)
   Returns NULL if unable to complete the request for any reason.
 */
-void *FT_replaceFileContents(const char *pcPath, void *pvNewContents,
-                             size_t ulNewLength);
+void *FT_replaceFileContents(const char *pcPath, void *pvNewContents, size_t ulNewLength) {
+    
+}
+
+                            
 
 /*
   Returns SUCCESS if pcPath exists in the hierarchy,
