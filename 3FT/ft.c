@@ -109,6 +109,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
 static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     Path_T oPPath = NULL;
     NodeD_T oNFound = NULL;
+    NodeF_T oNFile = NULL;
     int iStatus;
 
     assert(pcPath != NULL);
@@ -137,6 +138,11 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
         Path_free(oPPath);
         *poNResult = NULL;
         return NO_SUCH_PATH;
+    }
+
+    iStatus = FT_findFile(pcPath,&oNFile);
+    if (iStatus == SUCCESS) {
+        return NOT_A_DIRECTORY;
     }
 
     if(Path_comparePath(NodeD_getPath(oNFound), oPPath) != 0) {
@@ -360,10 +366,10 @@ int FT_rmDir(const char *pcPath) {
     assert(pcPath != NULL);
 
     /* pcPath is a path to a file */
-    iStatus = FT_findFile(pcPath,&oNfFound);
+    /*iStatus = FT_findFile(pcPath,&oNfFound);
     if (iStatus == SUCCESS) {
         return NOT_A_DIRECTORY;
-    }
+    }*/
 
     iStatus = FT_findDir(pcPath, &oNdFound);
     if(iStatus != SUCCESS)
