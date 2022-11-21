@@ -501,7 +501,7 @@ int FT_rmFile(const char *pcPath) {
 */
 void *FT_getFileContents(const char *pcPath) {
     int iStatus;
-    NodeF_T oNFound = NULL;
+    NodeF_T oNFound;
 
     assert(pcPath != NULL);
 
