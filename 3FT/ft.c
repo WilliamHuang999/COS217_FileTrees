@@ -35,7 +35,7 @@ static size_t ulCount;
 
   *Credit: Adapted from DT_traversePath() (Christopher Moretti)
 */
-static int FT_traversePath(Path_T oPPath, NodeD_T poNFurthest) {
+static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
     int iStatus;
     Path_T oPPrefix = NULL;
     NodeD_T oNCurr;
@@ -72,7 +72,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T poNFurthest) {
     /* Increment over depths until at closest ancestor directory of last node in the path. If the last node is a directory, it will stop there. */
     for (i = 2; i <= ulDepth; i++) {
         iStatus = Path_prefix(oPPath, i, &oPPrefix);
-        if(iStatus != SUCESS) {
+        if(iStatus != SUCCESS) {
             *poNFurthest = NULL;
             return iStatus;
         }
@@ -84,7 +84,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T poNFurthest) {
                 *poNFurthest = NULL;
                 return iStatus;
             }
-            onCurr = oNChild;
+            oNCurr = oNChild;
         }
         else {
             break;
