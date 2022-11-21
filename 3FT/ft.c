@@ -602,7 +602,19 @@ int FT_init(void) {
   Returns INITIALIZATION_ERROR if not already initialized,
   and SUCCESS otherwise.
 */
-int FT_destroy(void);
+int FT_destroy(void) {
+   if(!bIsInitialized)
+      return INITIALIZATION_ERROR;
+
+   if(oNRoot) {
+      ulCount -= Node_free(oNRoot);
+      oNRoot = NULL;
+   }
+
+   bIsInitialized = FALSE;
+
+   return SUCCESS;
+}
 
 /*
   Returns a string representation of the
@@ -616,4 +628,93 @@ int FT_destroy(void);
   Allocates memory for the returned string,
   which is then owned by client!
 */
-char *FT_toString(void);
+char *FT_toString(void) {
+   DynArray_T nodes;
+   size_t totalStrlen = 1;
+   char *result = NULL;
+
+   if(!bIsInitialized)
+      return NULL;
+
+   nodes = DynArray_new(ulCount);
+   (void) DT_preOrderTraversal(oNRoot, nodes, 0);
+
+   DynArray_map(nodes, (void (*)(void *, void*)) DT_strlenAccumulate,
+                (void*) &totalStrlen);
+
+   result = malloc(totalStrlen);
+   if(result == NULL) {
+      DynArray_free(nodes);
+      return NULL;
+   }
+   *result = '\0';
+
+   DynArray_map(nodes, (void (*)(void *, void*)) DT_strcatAccumulate,
+                (void *) result);
+
+   DynArray_free(nodes);
+
+   return result;
+}
+
+
+/*
+  Alternate version of strcat that inverts the typical argument
+  order, appending oNNode's path onto pcAcc, and also always adds one
+  newline at the end of the concatenated string.
+*/
+static void DT_strcatAccumulate(NodeD_T oNdNode, char *pcAcc) {
+   char* pcNodeString;
+
+   assert(pcAcc != NULL);
+
+   if(oNdNode != NULL) {
+      pcNodeString = NodeD_toString(oNdNode);
+      strcat(pcAcc, pcNodeString);
+      strcat(pcAcc, "\n");
+      free(pcNodeString);
+   }
+}
+
+/*
+  Alternate version of strlen that uses pulAcc as an in-out parameter
+  to accumulate a string length, rather than returning the length of
+  oNNode's path, and also always adds one addition byte to the sum.
+*/
+static void DT_strlenAccumulate(NodeD_T oNdNode, size_t *pulAcc) {
+   char* pcNodeString;
+
+   assert(pulAcc != NULL);
+
+   if(oNdNode != NULL) {
+      pcNodeString = NodeD_toString(oNdNode);
+      *pulAcc += strlen(pcNodeString) + 1;
+      free(pcNodeString);      
+   }
+}
+
+
+/*
+  Performs a pre-order traversal of the tree rooted at n,
+  inserting each payload to DynArray_T d beginning at index i.
+  Returns the next unused index in d after the insertion(s).
+*/
+
+static size_t DT_preOrderTraversal(NodeD_T n, DynArray_T d, size_t i) {
+   size_t c;
+
+   assert(d != NULL);
+
+   if(n != NULL) {
+      (void) DynArray_set(d, i, n);
+      i++;
+      for(c = 0; c < NodeD_getDirChildren(n); c++) {
+         int iStatus;
+         NodeD_T oNdChild = NULL;
+         iStatus = Node_getChild(n,c, &oNdChild);
+         assert(iStatus == SUCCESS);
+         i = DT_preOrderTraversal(oNdChild, d, i);
+      }
+   }
+   return i;
+}
