@@ -288,7 +288,7 @@ int FT_insertDir(const char *pcPath) {
         }
 
         /* If trying to insert directory as child of file */
-        if (FT_containsFile(Path_getPathName(oPPrefix))) {
+        if (FT_containsFile(Path_getPathname(oPPrefix))) {
             Path_free(oPPath);
             Path_free(oPPrefix);
             if (oNFirstNew != NULL){
