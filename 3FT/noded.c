@@ -374,7 +374,7 @@ char *NodeD_toString(NodeD_T oNdNode) {
 
    /* Concatenate oNdNode directory path name onto pcResult */
    strcat(pcResult, Path_getPathname(NodeD_getPath(oNdNode)));
-   strcat(pcResult,"\n");
+   strcat(pcResult,"\t");
 
    /* Concatenate child file path names onto pcResult */
    for (i = 0; i < numFileChildren; i++) {

@@ -530,7 +530,7 @@ int FT_rmFile(const char *pcPath) {
         return iStatus;
     
     NodeF_free(oNFound);
-    
+    /* remove the file from parent node child array */
     return SUCCESS;
 }
 
