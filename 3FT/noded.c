@@ -161,8 +161,8 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
 }
 
 int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild, size_t ulIndex) {
-   assert(oNdParent 1= NULL);
-   assert(oNdChild != NULL);
+   assert(oNdParent != NULL);
+   assert(oNfChild != NULL);
 
    if (DynArray_addAt(oNdParent->oDFileChildren, ulIndex, oNfChild))
       return SUCCESS;
