@@ -56,4 +56,10 @@ char *NodeF_toString(NodeF_T oNfNode);
 
 void *NodeF_getContents(NodeF_T oNfNode);
 
+size_t NodeF_getLength(NodeF_T oNfNode);
+
+void *NodeF_replaceContents(NodeF_T oNfNode, void* pvNewContents);
+
+size_t NodeF_replaceLength(NodeF_T oNfNode, size_t ulNewLength);
+
 #endif

@@ -118,3 +118,27 @@ void *NodeF_getContents(NodeF_T oNfNode) {
 
    return oNfNode->pvContents;
 }
+
+size_t NodeF_getLength(NodeF_T oNfNode) {
+   assert(oNfNode != NULL);
+
+   return oNfNode->ulLength;
+}
+
+void *NodeF_replaceContents(NodeF_T oNfNode, void* pvNewContents) {
+   void *pvOldContents;
+   assert(oNfNode != NULL);
+
+   pvOldContents = oNfNode->pvContents;
+   oNfNode->pvContents = pvNewContents;
+   return pvOldContents;
+}
+
+size_t NodeF_replaceLength(NodeF_T oNfNode, size_t ulNewLength) {
+   size_t ulOldLength;
+   assert(oNfNode != NULL);
+
+   ulOldLength = oNfNode->ulLength;
+   oNfNode->ulLength = ulNewLength;
+   return ulOldLength;
+}

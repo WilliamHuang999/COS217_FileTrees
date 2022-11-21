@@ -520,7 +520,6 @@ void *FT_getFileContents(const char *pcPath) {
 */
 void *FT_replaceFileContents(const char *pcPath, void *pvNewContents, size_t ulNewLength) {
     int iStatus;
-    void *pvOldContents = NULL;
     NodeF_T oNFound = NULL;
 
     assert(pcPath != NULL);
@@ -528,12 +527,9 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents, size_t ulN
     iStatus = FT_findFile(pcPath, &oNFound);
     if(iStatus != SUCCESS)
         return NULL;
-
-    pvOldContents = oNFound->pvContents;
-    oNFound->pvContents = pvNewContents;
-    oNFound->ulLength = ulNewLength;
-
-    return pvOldContents;
+    
+    (void)NodeF_replaceLength(oNFound,ulNewLength);
+    return NodeF_replaceContents(oNFound,pvNewContents);
 }
 
                             
