@@ -401,7 +401,7 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     else {
         ulIndex = Path_getDepth(NodeD_getPath(oNParent)) + 1;
         /* the file is already a child of its parent directory */
-        if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID) || NodeD_hasDirChild(oNParent, oPPath, &ulChildID)) {
+        if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID) || NodeD_hasDirChild(oNParent, oPPath, &ulChildID) || (Path_comparePath(NodeD_getPath(oNParent), oPPath) == 0)) {
             Path_free(oPPath);
             return ALREADY_IN_TREE;
         }
