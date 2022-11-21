@@ -142,7 +142,7 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     if(Path_comparePath(NodeD_getPath(oNFound), oPPath) != 0) {
         Path_free(oPPath);
         *poNResult = NULL;
-        return NOT_A_DIRECTORY;
+        return NO_SUCH_PATH;
     }
 
     Path_free(oPPath);
@@ -354,12 +354,17 @@ boolean FT_containsDir(const char *pcPath) {
 */
 int FT_rmDir(const char *pcPath) {
     int iStatus;
-    NodeD_T oNFound = NULL;
+    NodeD_T oNdFound = NULL;
+    NodeF_T oNfFound = NULL;
 
     assert(pcPath != NULL);
 
-    iStatus = FT_findDir(pcPath, &oNFound);
+    /* pcPath is a path to a file */
+    if(FT_findFile(pcPath,&oNfFound)) {
+        return NOT_A_DIRECTORY;
+    }
 
+    iStatus = FT_findDir(pcPath, &oNFound);
     if(iStatus != SUCCESS)
         return iStatus;
 
