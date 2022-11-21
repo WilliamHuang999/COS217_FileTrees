@@ -720,7 +720,7 @@ static void FT_strcatAccumulate(NodeD_T oNdNode, char *pcAcc) {
    if(oNdNode != NULL) {
       pcNodeString = NodeD_toString(oNdNode);
       strcat(pcAcc, pcNodeString);
-      strcat(pcAcc, "\n");
+      /*strcat(pcAcc, "\n");*/
       free(pcNodeString);
    }
 }
