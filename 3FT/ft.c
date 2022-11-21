@@ -546,21 +546,6 @@ int FT_rmFile(const char *pcPath) {
     return SUCCESS;
 }
 
-
-
-    boolean NodeD_hasFileChild(NodeD_T oNdParent, Path_T oPPath,
-                         size_t *pulChildID) {
-
-    (void)DynArray
-
-    NodeF_free(DynArray_get(oNdNode->oDFileChildren,0));
-      DynArray_removeAt(oNdNode->oDFileChildren,0);
-
-    NodeF_free(oNFound);
-    /* remove the file from parent node child array */
-    return SUCCESS;
-}
-
 /* ================================================================== */
 /*
   Returns the contents of the file with absolute path pcPath.
