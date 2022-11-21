@@ -100,7 +100,7 @@ int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2);
 
 /*
   Returns a string representation for oNDNode, or NULL if
-  there is an allocation error. String representation includes the file children and directory children
+  there is an allocation error. String representation includes the file children.
 
   Allocates memory for the returned string, which is then owned by
   the caller!

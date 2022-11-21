@@ -289,14 +289,41 @@ int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2) {
    return Path_comparePath(oNdNode1->oPPath, oNdNode2->oPPath);
 }
 
+/* change str accumulate functions. getpath change to tostring */
 char *NodeD_toString(NodeD_T oNdNode) {
-   char *copyPath;
+   char *pcResult;  /* Resulting string representation to be returned */
+   size_t totalStrlen; /* Total string length of pcResult */
+   size_t i;   /* Index to iterate thru file children */
+   size_t numFileChildren; /* Number of file children of directory */
+   NodeF_T oNfChild;
 
    assert(oNdNode != NULL);
 
-   copyPath = malloc(Path_getStrLength(NodeD_getPath(oNdNode))+1);
-   if(copyPath == NULL)
+   totalStrlen += Path_getStrLength(NodeD_getPath(oNdNode)) + 1;
+
+   /* Find out how many characters will be in pcResult */
+   numFileChildren = NodeD_getNumFileChildren(oNdNode);
+   for (i = 0; i < numFileChildren; i++) {
+      oNfChild = DynArray_get(oNdNode->oDFileChildren,i);
+      totalStrlen += Path_getStrLength(NodeF_getPath(oNfChild)) + 1;
+   }
+
+   /* Allocate mem and check if enough mem */
+   pcResult = malloc(totalStrlen + 1);
+   if (pcResult == NULL) {
       return NULL;
-   else
-      return strcpy(copyPath, Path_getPathname(NodeD_getPath(oNdNode)));
+   }
+   
+   /* Concatenate oNdNode directory path name onto pcResult */
+   strcat(pcResult, Path_getPathname(NodeD_getPath(oNdNode)));
+   strcat(pcResult,'\n');
+   /* Concatenate child file path names onto pcResult */
+   for (i = 0; i < numFileChildren; i++) {
+      oNfChild = DynArray_get(oNdNode->oDFileChildren,i);
+      strcat(pcResult, Path_getPathname(NodeF_getPath(oNfChild)));
+      strcat(pcResult,'\n');
+   }
+   strcat(pcResult,'\0');
+
+   return pcResult;
 }
