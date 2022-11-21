@@ -555,7 +555,29 @@ void *FT_replaceFileContents(const char *pcPath, void *pvNewContents, size_t ulN
 
   When returning another status, *pbIsFile and *pulSize are unchanged.
 */
-int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize);
+int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
+    Path_T oPPath = NULL;
+    NodeD_T oNdFound = NULL;
+    NodeF_T oNfFound = NULL;
+    int iStatusDir;
+    int iStatusFile;
+
+    iStatusDir = FT_findDir(pcPath, &oNdFound);
+    iStatusFile = FT_findFile(pcPath, &oNfFound);
+
+    if (iStatusDir == SUCCESS) {
+        pbIsFile = FALSE;
+        return iStatusDir;
+    }
+    else if (iStatusFile == SUCCESS) {
+        pbIsFile = TRUE;
+        pulSize = oNfFound->ulLength;
+        return iStatusFile;
+    }
+    else {
+        return iStatusDir;
+    }
+}
 
 /*
   Sets the FT data structure to an initialized state.
