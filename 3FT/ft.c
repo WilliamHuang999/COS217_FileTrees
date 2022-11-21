@@ -353,7 +353,7 @@ int FT_rmDir(const char *pcPath) {
    * MEMORY_ERROR if memory could not be allocated to complete request
 */
 int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
-
+    int iStatus;
     NodeD_T oNFirstNew = NULL;
     NodeD_T oNParent = NULL;
     NodeF_T oNNewFile = NULL;
