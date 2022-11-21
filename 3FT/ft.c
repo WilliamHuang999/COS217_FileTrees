@@ -236,11 +236,10 @@ int FT_insertDir(const char *pcPath) {
     size_t ulDepth, ulIndex;
     size_t ulNewNodes = 0; 
 
-
-    /* validate pcPath and generate a Path_T for it */
     if(!bIsInitialized)
         return INITIALIZATION_ERROR;
     
+    /* validate pcPath and generate a Path_T for it */
     iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS)
         return iStatus;
@@ -286,6 +285,16 @@ int FT_insertDir(const char *pcPath) {
             if (oNFirstNew != NULL)
                 (void) NodeD_free(oNFirstNew);
             return iStatus;
+        }
+
+        /* If trying to insert directory as child of file */
+        if (FT_containsFile(Path_getPathName(oPPrefix))) {
+            Path_free(oPPath);
+            Path_free(oPPrefix);
+            if (oNFirstNew != NULL){
+                (void)NodeD_free(oNFirstNew);
+            }
+            return NOT_A_DIRECTORY;
         }
 
         /* insert the new node for this level */
