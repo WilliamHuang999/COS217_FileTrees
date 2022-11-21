@@ -364,12 +364,11 @@ int FT_rmDir(const char *pcPath) {
         return NOT_A_DIRECTORY;
     }
 
-    iStatus = FT_findDir(pcPath, &oNFound);
+    iStatus = FT_findDir(pcPath, &oNdFound);
     if(iStatus != SUCCESS)
         return iStatus;
 
-    ulDirCount -= NodeD_free(oNFound);
-    assert(DynArray_getLength(NodeD_getDirChildren(oNFound)) == ulDirCount);
+    ulDirCount -= NodeD_free(oNdFound);
     if(ulDirCount == 0)
         oNRoot = NULL;
 
