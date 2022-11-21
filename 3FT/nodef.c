@@ -60,19 +60,15 @@ int NodeF_new(Path_T oPPath, NodeF_T *poNfResult) {
 }
 
 /* ================================================================== */
-size_t NodeF_free(NodeF_T oNfNode) {
+void NodeF_free(NodeF_T oNfNode) {
    size_t ulSize;
 
    assert(oNfNode != NULL);
-
-   ulSize = oNfNode->ulLength;
 
    /* Remove path */
    Path_free(oNfNode->oPPath);
    /* Free the actual file node */
    free(oNfNode);
-
-   return ulSize;
 }
 
 /* ================================================================== */

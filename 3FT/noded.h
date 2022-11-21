@@ -32,7 +32,7 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult);
 /*
   Destroys and frees all memory allocated for the subtree rooted at
   oNDNode, i.e., deletes this directory and all its descendents. 
-  Returns the number of directories and files deleted.
+  Returns the number of directories (exluding files) deleted.
 */
 size_t NodeD_free(NodeD_T oNdNode);
 

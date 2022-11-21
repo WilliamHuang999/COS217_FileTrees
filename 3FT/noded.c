@@ -45,6 +45,30 @@ static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
         return MEMORY_ERROR;
 }
 
+/* Removes and frees all file children from oNdNode. */
+static void NodeD_removeFileChildren(NodeD_T oNdNode){
+   size_t numFileChildren;
+   size_t numFileChildren2;
+
+   assert(oNdParent != NULL);
+
+   /* Get number of file children initially */
+   numFileChildren = NodeD_getNumFileChildren(oNdNode);
+   numFileChildren2 = NodeD_getNumFileChildren(oNdNode);
+   /* Loop thru array of file children and remove/free them */
+   while(numFileChildren != 0) {
+      NodeF_free(DynArray_get(oNdNode->oDFileChildren,0));
+      DynArray_removeAt(oNdNode->oDFileChildren,0);
+
+      numFileChildren2 -= 1;
+      numFileChildren = NodeD_getNumFileChildren(oNdNode);
+      assert(numFileChildren == numFileChildren2);
+   }
+   /* Free array of file children */
+   DynArray_free(oNdNode->oDFileChildren);  
+}
+
+
 /*
   Compares the string representation of a directory node oNdNode1 with 
   a string pcSecond representing a directory node's path.
@@ -60,7 +84,6 @@ static int NodeD_compareString(const NodeD_T oNdNode1,
 }
 
 /* ================================================================== */
-
 /*
   Creates a new directory node with path oPPath and directory parent 
   oNdParent.  Returns an int SUCCESS status and sets *poNdResult to be 
@@ -188,6 +211,7 @@ ulIndex) {
 size_t NodeD_free(NodeD_T oNdNode) {
    size_t ulIndex;
    size_t ulCount = 0;
+   size_t numFileChildren;
 
    assert(oNdNode != NULL);
 
@@ -196,23 +220,22 @@ size_t NodeD_free(NodeD_T oNdNode) {
       if(DynArray_bsearch(
             oNdNode->oNdParent->oDDirChildren,
             oNdNode, &ulIndex,
-            (int (*)(const void *, const void *)) NodeD_compare)
-        )
-         (void) DynArray_removeAt(oNdNode->oNdParent->oDDirChildren,
+            (int (*)(const void *, const void *)) NodeD_compare)) {
+               (void) DynArray_removeAt
+               (oNdNode->oNdParent->oDDirChildren,
                                   ulIndex);
+            }
    }
 
-   /* recursively remove directory children */
+   /* Recursively remove directory children */
    while(DynArray_getLength(oNdNode->oDDirChildren) != 0) {
+      /* Increment counter of directories removed */
       ulCount += NodeD_free(DynArray_get(oNdNode->oDDirChildren, 0));
    }
    DynArray_free(oNdNode->oDDirChildren);
 
-   /* recursively remove file children */
-   while(DynArray_getLength(oNdNode->oDFileChildren) != 0) {
-      ulCount += NodeF_free(DynArray_get(oNdNode->oDFileChildren, 0));
-   }
-   DynArray_free(oNdNode->oDFileChildren);
+   /* Remove file children */
+   NodeD_removeFileChildren(oNdNode);
 
    /* remove path */
    Path_free(oNdNode->oPPath);

@@ -28,7 +28,7 @@ static boolean bIsInitialized;
 /* 2. Pointer to root directory node in the FT */
 static NodeD_T oNRoot;
 /* 3. Counter of number of directories (not including files) in FT */
-static size_t ulCount;
+static size_t ulDirCount;
 
 /* ================================================================== */
 /*
@@ -311,7 +311,7 @@ int FT_insertDir(const char *pcPath) {
     /* update DT state variables to reflect insertion */
     if(oNRoot == NULL)
         oNRoot = oNFirstNew;
-    ulCount += ulNewNodes;
+    ulDirCount += ulNewNodes;
 
     return SUCCESS;
 }   
@@ -354,8 +354,9 @@ int FT_rmDir(const char *pcPath) {
     if(iStatus != SUCCESS)
         return iStatus;
 
-    ulCount -= NodeD_free(oNFound);
-    if(ulCount == 0)
+    ulDirCount -= NodeD_free(oNFound);
+    assert(DynArray_getLength(oNFound->oDDirChildren) == ulDirCount);
+    if(ulDirCount == 0)
         oNRoot = NULL;
 
     return SUCCESS;
@@ -485,7 +486,7 @@ ulLength) {
     /* update DT state variables to reflect insertion */
     if(oNRoot == NULL)
         oNRoot = oNFirstNew;
-    ulCount += ulNewNodes;
+    ulDirCount += ulNewNodes;   /* MAKE SURE ulNewNodes ONLY INCLUDES NUMBER OF DIRECTORIES ADDED=======================================*/
 
     return SUCCESS;
 }
@@ -527,11 +528,8 @@ int FT_rmFile(const char *pcPath) {
 
     if(iStatus != SUCCESS)
         return iStatus;
-
-    ulCount -= NodeF_free(oNFound);
-    if(ulCount == 0)
-        oNRoot = NULL;
-
+    
+    NodeF_free(oNFound);
     return SUCCESS;
 }
 
@@ -631,7 +629,7 @@ int FT_init(void) {
 
     bIsInitialized = TRUE;
     oNRoot = NULL;
-    ulCount = 0;
+    ulDirCount = 0;
 
     return SUCCESS;
 }
@@ -648,9 +646,11 @@ int FT_destroy(void) {
       return INITIALIZATION_ERROR;
 
    if(oNRoot) {
-      ulCount -= NodeD_free(oNRoot);
+      ulDirCount -= NodeD_free(oNRoot);
       oNRoot = NULL;
    }
+
+   assert(ulDirCount == 0);
 
    bIsInitialized = FALSE;
 

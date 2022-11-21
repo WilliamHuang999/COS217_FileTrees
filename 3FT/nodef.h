@@ -23,10 +23,10 @@ typedef struct nodeF *NodeF_T;
 int NodeF_new(Path_T oPPath, NodeF_T *poNfResult);
 
 /*
-  Destroys and frees all memory allocated to this file node
-  oNFNode, i.e. Returns number of bytes the file contents had.
+  Destroys and frees memory allocated to file node oNfNode except for
+  its contents because contents are owned by client.
 */
-size_t NodeF_free(NodeF_T oNfNode);
+void NodeF_free(NodeF_T oNfNode);
 
 /* Returns the path object representing oNFNode's absolute path. */
 Path_T NodeF_getPath(NodeF_T oNfNode);
