@@ -35,7 +35,7 @@ static size_t ulCount;
 
   *Credit: Adapted from DT_traversePath() (Christopher Moretti)
 */
-static int FT_traversePath(Path_T oPPath, NodeD_T) {
+static int FT_traversePath(Path_T oPPath, NodeD_T poNFurthest) {
     int iStatus;
     Path_T oPPrefix = NULL;
     NodeD_T oNCurr;
@@ -59,7 +59,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T) {
         return iStatus;
     }
 
-    if(Path_comparePath(Node_getPath(oNRoot), oPPrefix)) {
+    if(Path_comparePath(NodeD_getPath(oNRoot), oPPrefix)) {
         Path_free(oPPrefix);
         *poNFurthest = NULL;
         return CONFLICTING_PATH;
@@ -128,13 +128,70 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
         return NO_SUCH_PATH;
     }
 
-    if(Path_comparePath(Node_getPath(oNFound), oPPath) != 0) {
+    if(Path_comparePath(NodeD_getPath(oNFound), oPPath) != 0) {
         Path_free(oPPath);
         *poNResult = NULL;
         return NO_SUCH_PATH;
     }
 
     Path_free(oPPath);
+    *poNResult = oNFound;
+    return SUCCESS;
+}
+
+static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
+    int iStatus;
+    Path_T oPPath = NULL;
+    NodeD_T oNParent = NULL;
+    NodeF_T oNFound = NULL;
+    size_t ulChildID;
+
+    assert(pcPath != NULL);
+    assert(poNResult != NULL);
+
+    if(!bIsInitialized) {
+        *poNResult = NULL;
+        return INITIALIZATION_ERROR;
+    }
+
+    iStatus = Path_new(pcPath, &oPPath);
+    if(iStatus != SUCCESS) {
+        *poNResult = NULL;
+        return iStatus;
+    }
+
+    iStatus = FT_traversePath(oPPath, &oNParent);
+    if(iStatus != SUCCESS)
+    {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return iStatus;
+    }
+
+    if(oNFound == NULL) {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return NO_SUCH_PATH;
+    }
+
+    if(Path_comparePath(NodeD_getPath(oNParent), oPPath) != 0) {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return NO_SUCH_PATH;
+    }
+
+
+    if (!NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
+        Path_free(oPPath);
+        return NO_SUCH_PATH;
+    }
+    iStatus = NodeD_getFileChild(oNParent, ulChildID, &oNFound);
+    if (iStatus != SUCCESS) {
+        return iStatus;
+    }   
+
+    Path_free(oPPath);
+
     *poNResult = oNFound;
     return SUCCESS;
 }
@@ -188,7 +245,7 @@ int FT_insertDir(const char *pcPath) {
     if(oNCurr == NULL) /* new root! */
         ulIndex = 1;
     else {
-        ulIndex = Path_getDepth(Node_getPath(oNCurr)) + 1;
+        ulIndex = Path_getDepth(NodeD_getPath(oNCurr)) + 1;
         /* oNCurr is the node we're trying to insert */
         if (ulIndex == ulDepth + 1 && !Path_comparePath(oPPath, NodeD_getPath(oNCurr))) {
             Path_free(oPPath);
@@ -265,7 +322,7 @@ boolean FT_containsDir(const char *pcPath) {
 */
 int FT_rmDir(const char *pcPath) {
     int iStatus;
-    Node_T oNFound = NULL;
+    NodeD_T oNFound = NULL;
 
     assert(pcPath != NULL);
 
@@ -331,7 +388,7 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     if(oNParent == NULL) /* new root! */
         ulIndex = 1;
     else {
-        ulIndex = Path_getDepth(Node_getPath(oNParent)) + 1;
+        ulIndex = Path_getDepth(NodeD_getPath(oNParent)) + 1;
         /* the file is already a child of its parent directory */
         if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
             Path_free(oPPath);
@@ -399,27 +456,11 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
 */
 boolean FT_containsFile(const char *pcPath) {
     int iStatus;
-    Path_T oPPath = NULL;
-    NodeD_T oNParent = NULL;
     NodeF_T oNFound = NULL;
-    size_t ulChildID;
 
     assert(pcPath != NULL);
 
-    iStatus = Path_new(pcPath, &oPPath);
-    if (iStatus != SUCCESS)
-        return (boolean) (iStatus == SUCCESS);
-    
-    /* find the closest directory ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
-    iStatus= FT_traversePath(oPPath, &oNParent);
-    if (iStatus != SUCCESS)
-    {
-        Path_free(oPPath);
-        return (boolean) (iStatus == SUCCESS);
-    }
-    
-    iStatus = NodeD_hasFileChild(oNParent, oPPath, ulChildID);
-    
+    iStatus = FT_findFile(pcPath, &oNFound);
     return (boolean) (iStatus == SUCCESS);
 }
 
@@ -434,7 +475,23 @@ boolean FT_containsFile(const char *pcPath) {
   * NOT_A_FILE if pcPath is in the FT as a directory not a file
   * MEMORY_ERROR if memory could not be allocated to complete request
 */
-int FT_rmFile(const char *pcPath);
+int FT_rmFile(const char *pcPath) {
+    int iStatus;
+    NodeF_T oNFound = NULL;
+
+    assert(pcPath != NULL);
+
+    iStatus = FT_findFile(pcPath, &oNFound);
+
+    if(iStatus != SUCCESS)
+        return iStatus;
+
+    ulCount -= NodeF_free(oNFound);
+    if(ulCount == 0)
+        oNRoot = NULL;
+
+    return SUCCESS;
+}
 
 /*
   Returns the contents of the file with absolute path pcPath.
