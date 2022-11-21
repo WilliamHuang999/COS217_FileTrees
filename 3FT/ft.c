@@ -353,14 +353,12 @@ int FT_rmDir(const char *pcPath) {
    * MEMORY_ERROR if memory could not be allocated to complete request
 */
 int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
-    int iStatus;
-    Path_T oPPath = NULL;
+
     NodeD_T oNFirstNew = NULL;
     NodeD_T oNParent = NULL;
     NodeF_T oNNewFile = NULL;
     size_t ulDepth, ulIndex, ulChildID;
     size_t ulNewNodes = 0; 
-
 
     /* validate pcPath and generate a Path_T for it */
     if(!bIsInitialized)
@@ -369,6 +367,9 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS)
         return iStatus;
+    
+    if(Path_getDepth(opPath) == 1)
+        return CONFLICTING_PATH;
     
     /* find the closest directory ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
     iStatus= FT_traversePath(oPPath, &oNParent);
@@ -386,7 +387,7 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     }
 
     ulDepth = Path_getDepth(oPPath);
-    if(oNParent == NULL) /* new root! */
+    if (oNParent == NULL) /* new root! */
         ulIndex = 1;
     else {
         ulIndex = Path_getDepth(NodeD_getPath(oNParent)) + 1;
