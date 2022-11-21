@@ -160,6 +160,17 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
    return SUCCESS;
 }
 
+int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild, size_t ulIndex) {
+   assert(oNdParent 1= NULL);
+   assert(oNdChild != NULL);
+
+   if (DynArray_addAt(oNdParent->oDFileChildren, ulIndex, oNfChild))
+      return SUCCESS;
+   else
+      return MEMORY_ERROR;
+}
+
+
 size_t NodeD_free(NodeD_T oNdNode) {
    size_t ulIndex;
    size_t ulCount = 0;

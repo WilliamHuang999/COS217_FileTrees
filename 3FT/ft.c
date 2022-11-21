@@ -440,14 +440,25 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
         ulIndex++;
     }
 
-    /* Inserting file as leaf */
+    
     iStatus = NodeF_new(oPPath, &oNNewFile);
-        if(iStatus != SUCCESS) {
-            Path_free(oPPath);
-            if(oNFirstNew != NULL)
-                (void) NodeD_free(oNFirstNew);
-            return iStatus;
-        }
+    if(iStatus != SUCCESS) {
+        Path_free(oPPath);
+        if(oNFirstNew != NULL)
+            (void) NodeD_free(oNFirstNew);
+        return iStatus;
+    }
+    if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
+        Path_free(oPPath);
+        return ALREADY_IN_TREE;
+    }
+    iStatus = NodeD_addFileChild(oNParent, oNNewFile, ulChildID);
+    if (iStatus != SUCCESS) {
+        Path_free(oPPath);
+        if(oNFirstNew != NULL)
+            (void) NodeD_free(oNFirstNew);
+        return iStatus; 
+    }
     ulNewNodes++;
 
     Path_free(oPPath);
