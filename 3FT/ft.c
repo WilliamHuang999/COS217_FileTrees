@@ -748,8 +748,7 @@ char *FT_toString(void) {
 
     DynArray_map(nodes, (void (*)(void *, void*)) FT_strcatAccumulate,
     (void *) result);
-
-    strcat(result,"\n");
+    
     DynArray_free(nodes);
 
     return result;
