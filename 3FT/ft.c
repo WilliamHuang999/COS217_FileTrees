@@ -168,7 +168,7 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
         return iStatus;
     }
 
-    if(oNFound == NULL) {
+    if(oNParent == NULL) {
         Path_free(oPPath);
         *poNResult = NULL;
         return NO_SUCH_PATH;
