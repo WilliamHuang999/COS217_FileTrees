@@ -370,7 +370,7 @@ char *NodeD_toString(NodeD_T oNdNode) {
       return NULL;
    }
    
-   pcResult = '\0';
+   *pcResult = '\0';
 
    /* Concatenate oNdNode directory path name onto pcResult */
    strcat(pcResult, Path_getPathname(NodeD_getPath(oNdNode)));
