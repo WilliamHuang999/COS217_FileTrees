@@ -299,7 +299,7 @@ char *NodeD_toString(NodeD_T oNdNode) {
 
    assert(oNdNode != NULL);
 
-   totalStrlen += Path_getStrLength(NodeD_getPath(oNdNode)) + 1;
+   totalStrlen = Path_getStrLength(NodeD_getPath(oNdNode)) + 1;
 
    /* Find out how many characters will be in pcResult */
    numFileChildren = NodeD_getNumFileChildren(oNdNode);
@@ -314,16 +314,18 @@ char *NodeD_toString(NodeD_T oNdNode) {
       return NULL;
    }
    
+   pcResult = '\0';
+
    /* Concatenate oNdNode directory path name onto pcResult */
    strcat(pcResult, Path_getPathname(NodeD_getPath(oNdNode)));
-   strcat(pcResult,'\n');
+   strcat(pcResult,"\n");
+
    /* Concatenate child file path names onto pcResult */
    for (i = 0; i < numFileChildren; i++) {
       oNfChild = DynArray_get(oNdNode->oDFileChildren,i);
       strcat(pcResult, Path_getPathname(NodeF_getPath(oNfChild)));
-      strcat(pcResult,'\n');
+      strcat(pcResult,"\n");
    }
-   strcat(pcResult,'\0');
 
    return pcResult;
 }
