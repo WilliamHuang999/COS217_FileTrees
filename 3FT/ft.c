@@ -142,6 +142,7 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
 static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     int iStatus;
     Path_T oPPath = NULL;
+    Path_T oPParentPath = NULL;
     NodeD_T oNParent = NULL;
     NodeF_T oNFound = NULL;
     size_t ulChildID;
@@ -174,7 +175,13 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
         return NO_SUCH_PATH;
     }
 
-    if(Path_comparePath(NodeD_getPath(oNParent), oPPath) != 0) {
+    iStatus = Path_prefix(oPPath, Path_getDepth(oPPath) - 1, &oPParentPath);
+    if(iStatus != SUCCESS) {
+        *poNFurthest = NULL;
+        return iStatus;
+    }
+
+    if(Path_comparePath(NodeD_getPath(oNParent), oPParentPath) != 0) {
         Path_free(oPPath);
         *poNResult = NULL;
         return NO_SUCH_PATH;
@@ -191,6 +198,7 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     }   
 
     Path_free(oPPath);
+    Path_free(oPParentPath);
 
     *poNResult = oNFound;
     return SUCCESS;
