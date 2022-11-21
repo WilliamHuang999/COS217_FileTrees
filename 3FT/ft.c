@@ -106,57 +106,6 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
 }
 
 /* ================================================================== */
-static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
-    Path_T oPPath = NULL;
-    NodeD_T oNFound = NULL;
-    NodeF_T oNFile = NULL;
-    int iStatus;
-
-    assert(pcPath != NULL);
-    assert(poNResult != NULL);
-
-    if(!bIsInitialized) {
-        *poNResult = NULL;
-        return INITIALIZATION_ERROR;
-    }
-
-    iStatus = Path_new(pcPath, &oPPath);
-    if(iStatus != SUCCESS) {
-        *poNResult = NULL;
-        return iStatus;
-    }
-
-    iStatus = FT_traversePath(oPPath, &oNFound);
-    if(iStatus != SUCCESS)
-    {
-        Path_free(oPPath);
-        *poNResult = NULL;
-        return iStatus;
-    }
-
-    if(oNFound == NULL) {
-        Path_free(oPPath);
-        *poNResult = NULL;
-        return NO_SUCH_PATH;
-    }
-
-    iStatus = FT_findFile(pcPath,&oNFile);
-    if (iStatus == SUCCESS) {
-        return NOT_A_DIRECTORY;
-    }
-
-    if(Path_comparePath(NodeD_getPath(oNFound), oPPath) != 0) {
-        Path_free(oPPath);
-        *poNResult = NULL;
-        return NO_SUCH_PATH;
-    }
-
-    Path_free(oPPath);
-    *poNResult = oNFound;
-    return SUCCESS;
-}
-
-/* ================================================================== */
 static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     int iStatus;
     Path_T oPPath = NULL;
@@ -205,7 +154,6 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
         return NO_SUCH_PATH;
     }
 
-
     if (!NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
         Path_free(oPPath);
         return NO_SUCH_PATH;
@@ -218,6 +166,57 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     Path_free(oPPath);
     Path_free(oPParentPath);
 
+    *poNResult = oNFound;
+    return SUCCESS;
+}
+
+/* ================================================================== */
+static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
+    Path_T oPPath = NULL;
+    NodeD_T oNFound = NULL;
+    NodeF_T oNFile = NULL;
+    int iStatus;
+
+    assert(pcPath != NULL);
+    assert(poNResult != NULL);
+
+    if(!bIsInitialized) {
+        *poNResult = NULL;
+        return INITIALIZATION_ERROR;
+    }
+
+    iStatus = Path_new(pcPath, &oPPath);
+    if(iStatus != SUCCESS) {
+        *poNResult = NULL;
+        return iStatus;
+    }
+
+    iStatus = FT_traversePath(oPPath, &oNFound);
+    if(iStatus != SUCCESS)
+    {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return iStatus;
+    }
+
+    if(oNFound == NULL) {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return NO_SUCH_PATH;
+    }
+
+    iStatus = FT_findFile(pcPath,&oNFile);
+    if (iStatus == SUCCESS) {
+        return NOT_A_DIRECTORY;
+    }
+
+    if(Path_comparePath(NodeD_getPath(oNFound), oPPath) != 0) {
+        Path_free(oPPath);
+        *poNResult = NULL;
+        return NO_SUCH_PATH;
+    }
+
+    Path_free(oPPath);
     *poNResult = oNFound;
     return SUCCESS;
 }
