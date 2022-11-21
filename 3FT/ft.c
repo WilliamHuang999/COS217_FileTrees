@@ -509,7 +509,7 @@ void *FT_getFileContents(const char *pcPath) {
     if(iStatus != SUCCESS)
         return NULL;
 
-    return oNFound->pvContents;
+    return NodeF_getContents(oNFound);
 }
 
 /*

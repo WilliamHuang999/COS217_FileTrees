@@ -112,3 +112,9 @@ char *NodeF_toString(NodeF_T oNfNode) {
    /* Copy path name to copyPath and return the copy */
    return strcpy(copyPath, Path_getPathname(NodeF_getPath(oNfNode)));
 }
+
+void *NodeF_getContents(NodeF_T oNfNode) {
+   assert(oNfNode != NULL);
+
+   return oNfNode->pvContents;
+}

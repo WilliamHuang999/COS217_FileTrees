@@ -54,4 +54,6 @@ int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond);
 */
 char *NodeF_toString(NodeF_T oNfNode);
 
+void *NodeF_getContents(NodeF_T oNfNode);
+
 #endif
