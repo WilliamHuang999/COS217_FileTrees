@@ -50,7 +50,7 @@ static void NodeD_removeFileChildren(NodeD_T oNdNode){
    size_t numFileChildren;
    size_t numFileChildren2;
 
-   assert(oNdParent != NULL);
+   assert(oNdNode != NULL);
 
    /* Get number of file children initially */
    numFileChildren = NodeD_getNumFileChildren(oNdNode);
@@ -211,7 +211,6 @@ ulIndex) {
 size_t NodeD_free(NodeD_T oNdNode) {
    size_t ulIndex;
    size_t ulCount = 0;
-   size_t numFileChildren;
 
    assert(oNdNode != NULL);
 
@@ -385,4 +384,16 @@ char *NodeD_toString(NodeD_T oNdNode) {
    }
 
    return pcResult;
+}
+
+DynArray_T NodeD_getFileChildren(NodeD_T oNdNode) {
+   assert(oNdNode != NULL);
+
+   return oNdNode->oDFileChildren;
+}
+
+DynArray_T NodeD_getDirChildren(NodeD_T oNdNode) {
+   assert(oNdNode != NULL);
+
+   return oNdNode->oDDirChildren;
 }

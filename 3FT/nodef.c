@@ -61,8 +61,6 @@ int NodeF_new(Path_T oPPath, NodeF_T *poNfResult) {
 
 /* ================================================================== */
 void NodeF_free(NodeF_T oNfNode) {
-   size_t ulSize;
-
    assert(oNfNode != NULL);
 
    /* Remove path */

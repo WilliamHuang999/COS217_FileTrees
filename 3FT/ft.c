@@ -355,7 +355,7 @@ int FT_rmDir(const char *pcPath) {
         return iStatus;
 
     ulDirCount -= NodeD_free(oNFound);
-    assert(DynArray_getLength(oNFound->oDDirChildren) == ulDirCount);
+    assert(DynArray_getLength(NodeD_getDirChildren(oNFound)) == ulDirCount);
     if(ulDirCount == 0)
         oNRoot = NULL;
 
@@ -530,6 +530,7 @@ int FT_rmFile(const char *pcPath) {
         return iStatus;
     
     NodeF_free(oNFound);
+    
     return SUCCESS;
 }
 

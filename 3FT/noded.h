@@ -113,4 +113,8 @@ int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2);
 */
 char *NodeD_toString(NodeD_T oNdNode);
 
+DynArray_T NodeD_getFileChildren(NodeD_T oNdNode);
+
+DynArray_T NodeD_getDirChildren(NodeD_T oNdNode);
+
 #endif
