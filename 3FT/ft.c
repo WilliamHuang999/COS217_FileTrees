@@ -510,12 +510,15 @@ ulLength) {
             (void) NodeD_free(oNFirstNew);
         return iStatus; 
     }
+    
+    (void)NodeF_replaceContents(oNNewFile,pvContents);
+    (void)(NodeF_replaceLength(oNNewFile,ulLength));
 
     Path_free(oPPath);
     /* update DT state variables to reflect insertion */
     if(oNRoot == NULL)
         oNRoot = oNFirstNew;
-    ulDirCount += ulNewNodes;   /* MAKE SURE ulNewNodes ONLY INCLUDES NUMBER OF DIRECTORIES ADDED=======================================*/
+    ulDirCount += ulNewNodes;
 
     return SUCCESS;
 }
