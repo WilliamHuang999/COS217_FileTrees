@@ -354,6 +354,7 @@ int FT_rmDir(const char *pcPath) {
 */
 int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     int iStatus;
+    Path_T oPPath = NULL;
     NodeD_T oNFirstNew = NULL;
     NodeD_T oNParent = NULL;
     NodeF_T oNNewFile = NULL;
