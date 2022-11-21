@@ -70,7 +70,7 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
    int iStatus;
 
    assert(oPPath != NULL);
-   assert(oNdParent == NULL);
+   /* assert(oNdParent != NULL);*/
 
    /* allocate space for a new node */
    psdNew = malloc(sizeof(struct nodeD));
