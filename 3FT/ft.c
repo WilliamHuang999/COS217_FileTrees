@@ -287,7 +287,7 @@ int FT_insertDir(const char *pcPath) {
             return iStatus;
         }
 
-        /* If trying to insert directory as child of file */
+        /* If trying to insert child of a file */
         if (FT_containsFile(Path_getPathname(oPPrefix))) {
             Path_free(oPPath);
             Path_free(oPPrefix);
@@ -450,6 +450,16 @@ ulLength) {
                 (void) NodeD_free(oNFirstNew);
             return iStatus;
         }
+        
+        /* If trying to insert child of a file */
+        if (FT_containsFile(Path_getPathname(oPPrefix))) {
+            Path_free(oPPath);
+            Path_free(oPPrefix);
+            if (oNFirstNew != NULL){
+                (void)NodeD_free(oNFirstNew);
+            }
+            return NOT_A_DIRECTORY;
+        }
 
         /* insert the new node for this level */
         iStatus = NodeD_new(oPPrefix, oNParent, &oNNewNode);
@@ -478,6 +488,8 @@ ulLength) {
             (void) NodeD_free(oNFirstNew);
         return iStatus;
     }
+    /* MAY NEED TO FREE MEMORY HERE!!! FREE(oNNewFile).*/
+    /* ALSO MAYBE PUT THIS ALREADY_IN_TREE STUFF AT THE BEGINNING */
     if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
         Path_free(oPPath);
         return ALREADY_IN_TREE;
