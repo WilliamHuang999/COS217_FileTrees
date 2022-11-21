@@ -155,7 +155,7 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
 
    *poNdResult = psdNew;
 
-   assert(oNdParent == NULL);
+   /* assert(oNdParent == NULL); */
 
    return SUCCESS;
 }
