@@ -374,13 +374,13 @@ char *NodeD_toString(NodeD_T oNdNode) {
 
    /* Concatenate oNdNode directory path name onto pcResult */
    strcat(pcResult, Path_getPathname(NodeD_getPath(oNdNode)));
-   strcat(pcResult,"\t");
+   strcat(pcResult,"\n");
 
    /* Concatenate child file path names onto pcResult */
    for (i = 0; i < numFileChildren; i++) {
       oNfChild = DynArray_get(oNdNode->oDFileChildren,i);
       strcat(pcResult, Path_getPathname(NodeF_getPath(oNfChild)));
-      strcat(pcResult,"\n");
+      strcat(pcResult,"\t");
    }
 
    return pcResult;
