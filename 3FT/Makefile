@@ -4,10 +4,10 @@ ft: dynarray.o path.o nodef.o noded.o ft.o ft_client.o
 	gcc217m -g dynarray.o path.o noded.o nodef.o ft.o ft_client.o -o ft
 
 dynarray.o: dynarray.c dynarray.h
-	gcc217m -g -c dynarray.c
+	gcc217 -g -c dynarray.c
 
 path.o: path.c path.h
-	gcc217m -g -c path.c
+	gcc217 -g -c path.c
 
 ft_client.o: ft_client.c ft.h a4def.h
 	gcc217m -g -c ft_client.c
