@@ -360,7 +360,6 @@ boolean FT_containsDir(const char *pcPath) {
 int FT_rmDir(const char *pcPath) {
     int iStatus;
     NodeD_T oNdFound = NULL;
-    NodeF_T oNfFound = NULL;
 
     assert(pcPath != NULL);
 
