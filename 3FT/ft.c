@@ -488,7 +488,6 @@ ulLength) {
             oNFirstNew = oNParent;
         ulIndex++;
     }
-
     
     iStatus = NodeF_new(oPPath, &oNNewFile);
     if(iStatus != SUCCESS) {
@@ -499,10 +498,11 @@ ulLength) {
     }
     /* MAY NEED TO FREE MEMORY HERE!!! FREE(oNNewFile).*/
     /* ALSO MAYBE PUT THIS ALREADY_IN_TREE STUFF AT THE BEGINNING */
-    if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
+    /*if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
         Path_free(oPPath);
+        free(oNNewFile);
         return ALREADY_IN_TREE;
-    }
+    }*/
     iStatus = NodeD_addFileChild(oNParent, oNNewFile, ulChildID);
     if (iStatus != SUCCESS) {
         Path_free(oPPath);
@@ -510,7 +510,6 @@ ulLength) {
             (void) NodeD_free(oNFirstNew);
         return iStatus; 
     }
-    ulNewNodes++;
 
     Path_free(oPPath);
     /* update DT state variables to reflect insertion */
