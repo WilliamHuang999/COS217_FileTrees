@@ -142,7 +142,7 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     if(Path_comparePath(NodeD_getPath(oNFound), oPPath) != 0) {
         Path_free(oPPath);
         *poNResult = NULL;
-        return NO_SUCH_PATH;
+        return NOT_A_DIRECTORY;
     }
 
     Path_free(oPPath);
