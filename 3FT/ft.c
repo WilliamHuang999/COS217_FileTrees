@@ -520,15 +520,42 @@ boolean FT_containsFile(const char *pcPath) {
 */
 int FT_rmFile(const char *pcPath) {
     int iStatus;
+    size_t ulIndex;
     NodeF_T oNFound = NULL;
+    NodeD_T oNdParent = NULL;
 
     assert(pcPath != NULL);
 
+    /* Find file and assign to oNFound */
     iStatus = FT_findFile(pcPath, &oNFound);
-
     if(iStatus != SUCCESS)
         return iStatus;
-    
+
+    /* Find parent of the file */    
+    iStatus = FT_traversePath(NodeF_getPath(oNFound), &oNdParent);
+    if (iStatus != SUCCESS) {
+        return iStatus;
+    }
+    (void)NodeD_hasFileChild(oNdParent, NodeF_getPath(oNFound),
+    &ulIndex);
+
+    /* Remove and free the file node */
+    NodeF_free(oNFound);
+    (void)DynArray_removeAt(NodeD_getFileChildren(oNdParent),ulIndex);
+
+    return SUCCESS;
+}
+
+
+
+    boolean NodeD_hasFileChild(NodeD_T oNdParent, Path_T oPPath,
+                         size_t *pulChildID) {
+
+    (void)DynArray
+
+    NodeF_free(DynArray_get(oNdNode->oDFileChildren,0));
+      DynArray_removeAt(oNdNode->oDFileChildren,0);
+
     NodeF_free(oNFound);
     /* remove the file from parent node child array */
     return SUCCESS;

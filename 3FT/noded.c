@@ -58,7 +58,7 @@ static void NodeD_removeFileChildren(NodeD_T oNdNode){
    /* Loop thru array of file children and remove/free them */
    while(numFileChildren != 0) {
       NodeF_free(DynArray_get(oNdNode->oDFileChildren,0));
-      DynArray_removeAt(oNdNode->oDFileChildren,0);
+      (void)DynArray_removeAt(oNdNode->oDFileChildren,0);
 
       numFileChildren2 -= 1;
       numFileChildren = NodeD_getNumFileChildren(oNdNode);
