@@ -368,7 +368,7 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t ulLength) {
     if(iStatus != SUCCESS)
         return iStatus;
     
-    if(Path_getDepth(opPath) == 1)
+    if(Path_getDepth(oPPath) == 1)
         return CONFLICTING_PATH;
     
     /* find the closest directory ancestor of oPPath already in the tree, ancestor must be a directory by definition of file tree */
