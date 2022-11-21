@@ -616,10 +616,78 @@ int FT_destroy(void) {
    return SUCCESS;
 }
 
+/* ================================================================== */
 /*
-  Returns a string representation of the
-  data structure, or NULL if the structure is
-  not initialized or there is an allocation error.
+  The following auxiliary functions are used for generating the
+  string representation of the FT.
+*/
+
+/*
+  Performs pre-order traversal of file tree rooted at n,
+  inserting each payload to DynArray_T d beginning at index i.
+  Returns the next unused index in d after the insertion(s).
+*/
+
+static size_t FT_preOrderTraversal(NodeD_T n, DynArray_T d, size_t i) {
+   size_t c;
+
+   assert(d != NULL);
+
+   if(n != NULL) {
+      (void) DynArray_set(d, i, n);
+      i++;
+      for(c = 0; c < NodeD_getNumDirChildren(n); c++) {
+         int iStatus;
+         NodeD_T oNdChild = NULL;
+         iStatus = NodeD_getDirChild(n,c, &oNdChild);
+         assert(iStatus == SUCCESS);
+         i = DT_preOrderTraversal(oNdChild, d, i);
+      }
+   }
+   return i;
+}
+
+
+/*
+  Alternate version of strlen that uses pulAcc as an in-out parameter
+  to accumulate a string length, rather than returning the length of
+  oNdNode's path, and also always adds one addition byte to the sum.
+  Also accumulates the lengths of oNdNode's children Paths.
+*/
+static void FT_strlenAccumulate(NodeD_T oNdNode, size_t *pulAcc) {
+   char* pcNodeString;
+
+   assert(pulAcc != NULL);
+
+   if(oNdNode != NULL) {
+      pcNodeString = NodeD_toString(oNdNode);
+      *pulAcc += strlen(pcNodeString) + 1;
+      free(pcNodeString);      
+   }
+}
+
+
+/*
+  Alternate version of strcat that inverts the typical argument
+  order, appending oNdNode's string represenation onto pcAcc, and also always adds one newline at the end of the concatenated string.
+*/
+static void FT_strcatAccumulate(NodeD_T oNdNode, char *pcAcc) {
+   char* pcNodeString;
+
+   assert(pcAcc != NULL);
+
+   if(oNdNode != NULL) {
+      pcNodeString = NodeD_toString(oNdNode);
+      strcat(pcAcc, pcNodeString);
+      strcat(pcAcc, "\n");
+      free(pcNodeString);
+   }
+}
+
+/*
+  Returns a string representation of the file tree data structure, or
+  NULL if the structure is not initialized or there is an allocation
+  error.
 
   The representation is depth-first with files
   before directories at any given level, and nodes
@@ -637,9 +705,9 @@ char *FT_toString(void) {
       return NULL;
 
    nodes = DynArray_new(ulCount);
-   (void) DT_preOrderTraversal(oNRoot, nodes, 0);
+   (void) FT_preOrderTraversal(oNRoot, nodes, 0);
 
-   DynArray_map(nodes, (void (*)(void *, void*)) DT_strlenAccumulate,
+   DynArray_map(nodes, (void (*)(void *, void*)) FT_strlenAccumulate,
                 (void*) &totalStrlen);
 
    result = malloc(totalStrlen);
@@ -649,72 +717,10 @@ char *FT_toString(void) {
    }
    *result = '\0';
 
-   DynArray_map(nodes, (void (*)(void *, void*)) DT_strcatAccumulate,
+   DynArray_map(nodes, (void (*)(void *, void*)) FT_strcatAccumulate,
                 (void *) result);
 
    DynArray_free(nodes);
 
    return result;
-}
-
-
-/*
-  Alternate version of strcat that inverts the typical argument
-  order, appending oNNode's path onto pcAcc, and also always adds one
-  newline at the end of the concatenated string.
-*/
-static void DT_strcatAccumulate(NodeD_T oNdNode, char *pcAcc) {
-   char* pcNodeString;
-
-   assert(pcAcc != NULL);
-
-   if(oNdNode != NULL) {
-      pcNodeString = NodeD_toString(oNdNode);
-      strcat(pcAcc, pcNodeString);
-      strcat(pcAcc, "\n");
-      free(pcNodeString);
-   }
-}
-
-/*
-  Alternate version of strlen that uses pulAcc as an in-out parameter
-  to accumulate a string length, rather than returning the length of
-  oNNode's path, and also always adds one addition byte to the sum.
-*/
-static void DT_strlenAccumulate(NodeD_T oNdNode, size_t *pulAcc) {
-   char* pcNodeString;
-
-   assert(pulAcc != NULL);
-
-   if(oNdNode != NULL) {
-      pcNodeString = NodeD_toString(oNdNode);
-      *pulAcc += strlen(pcNodeString) + 1;
-      free(pcNodeString);      
-   }
-}
-
-
-/*
-  Performs a pre-order traversal of the tree rooted at n,
-  inserting each payload to DynArray_T d beginning at index i.
-  Returns the next unused index in d after the insertion(s).
-*/
-
-static size_t DT_preOrderTraversal(NodeD_T n, DynArray_T d, size_t i) {
-   size_t c;
-
-   assert(d != NULL);
-
-   if(n != NULL) {
-      (void) DynArray_set(d, i, n);
-      i++;
-      for(c = 0; c < NodeD_getDirChildren(n); c++) {
-         int iStatus;
-         NodeD_T oNdChild = NULL;
-         iStatus = Node_getChild(n,c, &oNdChild);
-         assert(iStatus == SUCCESS);
-         i = DT_preOrderTraversal(oNdChild, d, i);
-      }
-   }
-   return i;
 }
