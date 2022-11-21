@@ -607,7 +607,7 @@ int FT_destroy(void) {
       return INITIALIZATION_ERROR;
 
    if(oNRoot) {
-      ulCount -= Node_free(oNRoot);
+      ulCount -= NodeD_free(oNRoot);
       oNRoot = NULL;
    }
 
@@ -641,7 +641,7 @@ static size_t FT_preOrderTraversal(NodeD_T n, DynArray_T d, size_t i) {
          NodeD_T oNdChild = NULL;
          iStatus = NodeD_getDirChild(n,c, &oNdChild);
          assert(iStatus == SUCCESS);
-         i = DT_preOrderTraversal(oNdChild, d, i);
+         i = FT_preOrderTraversal(oNdChild, d, i);
       }
    }
    return i;
