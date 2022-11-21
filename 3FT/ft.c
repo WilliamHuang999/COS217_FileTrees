@@ -177,7 +177,7 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
 
     iStatus = Path_prefix(oPPath, Path_getDepth(oPPath) - 1, &oPParentPath);
     if(iStatus != SUCCESS) {
-        *poNFurthest = NULL;
+        *poNResult = NULL;
         return iStatus;
     }
 
