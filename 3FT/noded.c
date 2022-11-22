@@ -99,15 +99,13 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
    assert(oPPath != NULL);
    assert(poNdResult != NULL);
 
-   ulIndex = 0;
-
    /* allocate space for a new node */
    psdNew = malloc(sizeof(struct nodeD));
    if(psdNew == NULL) {
       *poNdResult = NULL;
       return MEMORY_ERROR;
    }
-
+   
    /* set the new node's path */
    iStatus = Path_dup(oPPath, &oPNewPath);
    if(iStatus != SUCCESS) {
@@ -205,7 +203,7 @@ ulIndex) {
 /* ================================================================== */
 size_t NodeD_free(NodeD_T oNdNode) {
    size_t ulIndex;
-   size_t ulCount;
+   size_t ulCount = 0;
 
    assert(oNdNode != NULL);
 
