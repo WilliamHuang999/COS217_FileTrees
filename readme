@@ -224,7 +224,6 @@ ft.c: line 632: medium priority:
 nodef.c: line 109: medium priority:
    Do you want to validate 'pvNewContents' through an assert?
 
-
 ^^Regarding the five above: These arguments should not be asserted as 
 the design and definition of their function is meant to allow NULL 
 values to be assigned to them. File contents can be null and FT_stat 
