@@ -443,11 +443,11 @@ int FT_insertFile(const char *pcPath, void *pvContents, size_t
 ulLength) {
     int iStatus;
     Path_T oPPath = NULL; 
-    NodeD_T oNFirstNew = NULL;
+    NodeD_T oNFirstNew = NULL; /* first new node added */
     NodeD_T oNParent = NULL;
-    NodeF_T oNNewFile = NULL;
-    size_t ulDepth, ulIndex, ulChildID;
-    size_t ulNewNodes = 0; 
+    NodeF_T oNNewFile = NULL; /* file to be added */
+    size_t ulDepth, ulIndex, ulChildID; 
+    size_t ulNewNodes = 0; /* number of new directories */
 
     assert(pcPath != NULL);
 
