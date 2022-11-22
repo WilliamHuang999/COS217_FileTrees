@@ -120,10 +120,10 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
 
 /* ================================================================== */
 /*
-  Traverses the DT to find a file with absolute path pcPath. Returns a 
+  Traverses the FT to find a file with absolute path pcPath. Returns a 
   int SUCCESS status and sets *poNResult to be the node, if found. 
   Otherwise, sets *poNResult to NULL and returns with status:
-  * INITIALIZATION_ERROR if the DT is not in an initialized state
+  * INITIALIZATION_ERROR if the FT is not in an initialized state
   * BAD_PATH if pcPath does not represent a well-formatted path
   * CONFLICTING_PATH if the root's path is not a prefix of pcPath
   * NO_SUCH_PATH if no node with pcPath exists in the hierarchy
@@ -208,10 +208,10 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
 
 /* ================================================================== */
 /*
-  Traverses the DT to find a directory with absolute path pcPath. 
+  Traverses the FT to find a directory with absolute path pcPath. 
   Returns a int SUCCESS status and sets *poNResult to be the node, if 
   found. Otherwise, sets *poNResult to NULL and returns with status:
-  * INITIALIZATION_ERROR if the DT is not in an initialized state
+  * INITIALIZATION_ERROR if the FT is not in an initialized state
   * BAD_PATH if pcPath does not represent a well-formatted path
   * CONFLICTING_PATH if the root's path is not a prefix of pcPath
   * NO_SUCH_PATH if no node with pcPath exists in the hierarchy
@@ -366,7 +366,7 @@ int FT_insertDir(const char *pcPath) {
     }
 
     Path_free(oPPath);
-    /* update DT state variables to reflect insertion */
+    /* update FT state variables to reflect insertion */
     if(oNRoot == NULL)
         oNRoot = oNFirstNew;
     ulDirCount += ulNewNodes;
@@ -736,6 +736,7 @@ static void FT_strlenAccumulate(NodeD_T oNdNode, size_t *pulAcc) {
 
     assert(pulAcc != NULL);
 
+    /* Accumulate string lengths */
     if(oNdNode != NULL) {
         pcNodeString = NodeD_toString(oNdNode);
         *pulAcc += strlen(pcNodeString);
@@ -765,16 +766,20 @@ char *FT_toString(void) {
     DynArray_T nodes;
     size_t totalStrlen = 1;
     char *result = NULL;
-
+    
+    /* Make sure FT is initialized */
     if(!bIsInitialized)
         return NULL;
 
+    /* Create array of all directory nodes to accumulate them */
     nodes = DynArray_new(ulDirCount);
     (void) FT_preOrderTraversal(oNRoot, nodes, 0);
 
+    /* Accumulate length of all directory node strings */
     DynArray_map(nodes, (void (*)(void *, void*)) FT_strlenAccumulate,
                     (void*) &totalStrlen);
 
+    /* Allocate mem and check for enough mem */
     result = malloc(totalStrlen + 1);
     if(result == NULL) {
         DynArray_free(nodes);
@@ -782,6 +787,7 @@ char *FT_toString(void) {
     }
     *result = '\0';
 
+    /* Accumulate string representations of all nodes */
     DynArray_map(nodes, (void (*)(void *, void*)) FT_strcatAccumulate,
     (void *) result);
     
