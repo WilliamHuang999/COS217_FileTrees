@@ -284,6 +284,8 @@ int FT_insertDir(const char *pcPath) {
     size_t ulDepth, ulIndex;
     size_t ulNewNodes = 0; 
 
+    assert(pcPath != NULL);
+
     if(!bIsInitialized)
         return INITIALIZATION_ERROR;
     
@@ -325,7 +327,6 @@ int FT_insertDir(const char *pcPath) {
     while (ulIndex <= ulDepth) {
         Path_T oPPrefix = NULL;
         NodeD_T oNNewNode = NULL;
-
         /* generate a Path_T for this level */
         iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
         if (iStatus != SUCCESS) {
@@ -334,17 +335,14 @@ int FT_insertDir(const char *pcPath) {
                 (void) NodeD_free(oNFirstNew);
             return iStatus;
         }
-
         /* If trying to insert child of a file */
         if (FT_containsFile(Path_getPathname(oPPrefix))) {
             Path_free(oPPath);
             Path_free(oPPrefix);
-            if (oNFirstNew != NULL){
+            if (oNFirstNew != NULL)
                 (void)NodeD_free(oNFirstNew);
-            }
             return NOT_A_DIRECTORY;
         }
-
         /* insert the new node for this level */
         iStatus = NodeD_new(oPPrefix, oNCurr, &oNNewNode);
         if(iStatus != SUCCESS) {
@@ -354,7 +352,6 @@ int FT_insertDir(const char *pcPath) {
                 (void) NodeD_free(oNFirstNew);
             return iStatus;
         }
-
         /* set up for next level */
         Path_free(oPPrefix);
         oNCurr = oNNewNode;
@@ -452,6 +449,8 @@ ulLength) {
     size_t ulDepth, ulIndex, ulChildID;
     size_t ulNewNodes = 0; 
 
+    assert(pcPath != NULL);
+
     if(!bIsInitialized)
         return INITIALIZATION_ERROR;
     
@@ -500,7 +499,6 @@ ulLength) {
     while (ulIndex < ulDepth) {
         Path_T oPPrefix = NULL;
         NodeD_T oNNewNode = NULL;
-
         /* generate a Path_T for this level */
         iStatus = Path_prefix(oPPath, ulIndex, &oPPrefix);
         if (iStatus != SUCCESS) {
@@ -509,17 +507,14 @@ ulLength) {
                 (void) NodeD_free(oNFirstNew);
             return iStatus;
         }
-        
         /* If trying to insert child of a file */
         if (FT_containsFile(Path_getPathname(oPPrefix))) {
             Path_free(oPPath);
             Path_free(oPPrefix);
-            if (oNFirstNew != NULL){
+            if (oNFirstNew != NULL)
                 (void)NodeD_free(oNFirstNew);
-            }
             return NOT_A_DIRECTORY;
         }
-
         /* insert the new node for this level */
         iStatus = NodeD_new(oPPrefix, oNParent, &oNNewNode);
         if(iStatus != SUCCESS) {
@@ -529,7 +524,6 @@ ulLength) {
                 (void) NodeD_free(oNFirstNew);
             return iStatus;
         }
-
         /* set up for next level */
         Path_free(oPPrefix);
         oNParent = oNNewNode;
@@ -706,6 +700,8 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
     NodeF_T oNfFound = NULL;
     int iStatusDir;
     int iStatusFile;
+
+    assert(pcPath != NULL);
 
     /* Check if path can be found as a file AND as a directory */
     iStatusDir = FT_findDir(pcPath, &oNdFound);
