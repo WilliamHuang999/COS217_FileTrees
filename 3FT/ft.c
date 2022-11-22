@@ -756,14 +756,18 @@ int FT_init(void) {
   and SUCCESS otherwise.
 */
 int FT_destroy(void) {
+    /* cannot destroy if it doesn't exist */
     if(!bIsInitialized)
         return INITIALIZATION_ERROR;
 
+    /* Free from root if it exists (will recursively free everything else)*/
     if(oNRoot) {
         ulDirCount -= NodeD_free(oNRoot);
+        /* uninitialize root */
         oNRoot = NULL;
     }
 
+    /* uninitialize FT fields */
     assert(ulDirCount == 0);
 
     bIsInitialized = FALSE;
