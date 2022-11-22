@@ -46,15 +46,6 @@ int NodeF_compare(NodeF_T oNfNode1, NodeF_T oNfNode2);
 */
 int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond);
 
-/*
-  Returns a string representation for oNfNode, or NULL if
-  there is an allocation error.
-
-  Allocates memory for the returned string, which is then owned by
-  the caller!
-*/
-char *NodeF_toString(NodeF_T oNfNode);
-
 /* Gets and returns the contents of file node oNfNode. */
 void *NodeF_getContents(NodeF_T oNfNode);
 
@@ -65,8 +56,17 @@ size_t NodeF_getLength(NodeF_T oNfNode);
   pvNewContents. Returns the old contents. */
 void *NodeF_replaceContents(NodeF_T oNfNode, void* pvNewContents);
 
-/* Replaces the current length with new length ulNewLength.
+/* Replaces the current length of oNfNode with new length ulNewLength.
   Returns the old length. */
 size_t NodeF_replaceLength(NodeF_T oNfNode, size_t ulNewLength);
+
+/*
+  Returns a string representation for oNfNode, or NULL if
+  there is an allocation error.
+
+  Allocates memory for the returned string, which is then owned by
+  the caller!
+*/
+char *NodeF_toString(NodeF_T oNfNode);
 
 #endif

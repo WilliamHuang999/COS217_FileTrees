@@ -91,22 +91,6 @@ int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond) {
 
    return Path_compareString(oNfNode1->oPPath, pcSecond);
 }
-
-/* ================================================================== */
-char *NodeF_toString(NodeF_T oNfNode) {
-   char *copyPath;   /* String representation of oNFNode */
-
-   assert(oNfNode != NULL);
-
-   /* Allocate mem for copyPath and check if enough mem */
-   copyPath = malloc(Path_getStrLength(NodeF_getPath(oNfNode))+1);
-   if(copyPath == NULL) {
-      return NULL;
-   }
-   /* Copy path name to copyPath and return the copy */
-   return strcpy(copyPath, Path_getPathname(NodeF_getPath(oNfNode)));
-}
-
 /* ================================================================== */
 void *NodeF_getContents(NodeF_T oNfNode) {
    assert(oNfNode != NULL);
@@ -139,4 +123,19 @@ size_t NodeF_replaceLength(NodeF_T oNfNode, size_t ulNewLength) {
    ulOldLength = oNfNode->ulLength;
    oNfNode->ulLength = ulNewLength;
    return ulOldLength;
+}
+
+/* ================================================================== */
+char *NodeF_toString(NodeF_T oNfNode) {
+   char *copyPath;   /* String representation of oNFNode */
+
+   assert(oNfNode != NULL);
+
+   /* Allocate mem for copyPath and check if enough mem */
+   copyPath = malloc(Path_getStrLength(NodeF_getPath(oNfNode))+1);
+   if(copyPath == NULL) {
+      return NULL;
+   }
+   /* Copy path name to copyPath and return the copy */
+   return strcpy(copyPath, Path_getPathname(NodeF_getPath(oNfNode)));
 }
