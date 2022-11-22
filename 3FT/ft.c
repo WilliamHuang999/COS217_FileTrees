@@ -674,6 +674,7 @@ size_t ulNewLength) {
 
     assert(pcPath != NULL);
 
+    /* Find file and set to oNFound so contents can be edited */
     iStatus = FT_findFile(pcPath, &oNFound);
     if(iStatus != SUCCESS)
         return NULL;
@@ -705,18 +706,22 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
     int iStatusDir;
     int iStatusFile;
 
+    /* Check if path can be found as a file AND as a directory */
     iStatusDir = FT_findDir(pcPath, &oNdFound);
     iStatusFile = FT_findFile(pcPath, &oNfFound);
 
+    /* Case 1: path found as a directory */
     if (iStatusDir == SUCCESS) {
         *pbIsFile = (int) FALSE;
         return iStatusDir;
     }
+    /* Case 2: path found as a file */
     else if (iStatusFile == SUCCESS) {
         *pbIsFile = (int) TRUE;
         *pulSize = NodeF_getLength(oNfFound);
         return iStatusFile;
     }
+    /* failed both cases */
     else {
         return iStatusDir;
     }
@@ -730,9 +735,11 @@ int FT_stat(const char *pcPath, boolean *pbIsFile, size_t *pulSize) {
   and SUCCESS otherwise.
 */
 int FT_init(void) {
+    /* cannot init an already intialized FT */
     if(bIsInitialized)
         return INITIALIZATION_ERROR;
 
+    /* Initialize fields */
     bIsInitialized = TRUE;
     oNRoot = NULL;
     ulDirCount = 0;
