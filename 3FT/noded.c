@@ -267,46 +267,72 @@ Path_T NodeD_getPath(NodeD_T oNdNode) {
 }
 
 /* ================================================================== */
+/*
+  Returns TRUE if oNDParent has a child directory with path oPPath. Returns FALSE if it does not.
+
+  If oNDParent has such a child, stores in *pulChildID the child's
+  identifier (as used in NodeD_getDirChild). If oNDParent does not have
+  such a child, stores in *pulChildID the identifier that such a
+  child _would_ have if inserted.
+*/
 boolean NodeD_hasDirChild(NodeD_T oNdParent, Path_T oPPath,
                          size_t *pulChildID) {
    assert(oNdParent != NULL);
    assert(oPPath != NULL);
    assert(pulChildID != NULL);
 
-   /* *pulChildID is the index into oNdParent->oDDirChildren */
+   /* returns results of binary search of directory child array, *pulChildID is the index into oNdParent->oDDirChildren, gets set by DynArray_bsearch */
    return (DynArray_bsearch(oNdParent->oDDirChildren,
             (char*) Path_getPathname(oPPath), pulChildID,
             (int (*)(const void*,const void*)) NodeD_compareString));
 }
 
 /* ================================================================== */
+/*
+  Returns TRUE if oNDParent has a child file with path oPPath. Returns
+  FALSE if it does not.
+
+  If oNDParent has such a child, stores in *pulChildID the child's
+  identifier (as used in NodeD_getFileChild). If oNDParent does not have
+  such a child, stores in *pulChildID the identifier that such a
+  child _would_ have if inserted.
+*/
 boolean NodeD_hasFileChild(NodeD_T oNdParent, Path_T oPPath,
                          size_t *pulChildID) {
    assert(oNdParent != NULL);
    assert(oPPath != NULL);
    assert(pulChildID != NULL);
 
-   /* *pulChildID is the index into oNdParent->oDDirChildren */
+   /* returns results of binary search of file child array, *pulChildID is the index into oNdParent->oDFileChildren, gets set by DynArray_bsearch */
    return (DynArray_bsearch(oNdParent->oDFileChildren,
             (char*) Path_getPathname(oPPath), pulChildID,
             (int (*)(const void*,const void*)) NodeF_compareString));
 }
 
 /* ================================================================== */
+/* Returns the number of directory children that oNDParent has. */
 size_t NodeD_getNumDirChildren(NodeD_T oNdParent) {
    assert(oNdParent != NULL);
 
+   /* length of file child array */
    return DynArray_getLength(oNdParent->oDDirChildren);
 }
 
 /* ================================================================== */
+/* Returns the number of file children that oNDParent has. */
 size_t NodeD_getNumFileChildren(NodeD_T oNdParent) {
    assert(oNdParent != NULL);
 
+   /* length of file child array */
    return DynArray_getLength(oNdParent->oDFileChildren);
 }
 
 /* ================================================================== */
+/*
+  Returns an int SUCCESS status and sets *poNResult to be the directory child node of oNDParent with identifier ulChildID, if one exists.
+  Otherwise, sets *poNResult to NULL and returns status:
+  * NO_SUCH_PATH if ulChildID is not a valid child for oNDParent
+*/
 int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
                    NodeD_T *poNdResult) {
 
@@ -326,6 +352,11 @@ int  NodeD_getDirChild(NodeD_T oNdParent, size_t ulChildID,
 }
 
 /* ================================================================== */
+/*
+  Returns an int SUCCESS status and sets *poNResult to be the file child node of oNDParent with identifier ulChildID, if one exists.
+  Otherwise, sets *poNResult to NULL and returns status:
+  * NO_SUCH_PATH if ulChildID is not a valid child for oNDParent
+*/
 int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
                    NodeF_T *poNfResult) {
 
@@ -345,6 +376,10 @@ int  NodeD_getFileChild(NodeD_T oNdParent, size_t ulChildID,
 }
 
 /* ================================================================== */
+/*
+  Returns a the parent node of oNDNode.
+  Returns NULL if oNDNode is the root and thus has no parent.
+*/
 NodeD_T NodeD_getParent(NodeD_T oNdNode) {
    assert(oNdNode != NULL);
 
@@ -352,6 +387,11 @@ NodeD_T NodeD_getParent(NodeD_T oNdNode) {
 }
 
 /* ================================================================== */
+/*
+  Compares two directory nodes oNDNode1 and oNDNode2 lexicographically 
+  based on their paths. Returns <0, 0, or >0 if oNDNode1 is "less 
+  than", "equal to", or "greater than" oNDNode2, respectively.
+*/
 int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2) {
    assert(oNdNode1 != NULL);
    assert(oNdNode2 != NULL);
@@ -360,6 +400,13 @@ int NodeD_compare(NodeD_T oNdNode1, NodeD_T oNdNode2) {
 }
 
 /* ================================================================== */
+/*
+  Returns a string representation for oNDNode, or NULL if
+  there is an allocation error. String representation includes the file children.
+
+  Allocates memory for the returned string, which is then owned by
+  the caller!
+*/
 char *NodeD_toString(NodeD_T oNdNode) {
    char *pcResult;  /* Resulting string representation to be returned */
    size_t totalStrlen; /* Total string length of pcResult */
@@ -400,12 +447,14 @@ char *NodeD_toString(NodeD_T oNdNode) {
    return pcResult;
 }
 
+/* Returns the dynarray object representing the children of oNdNode that are files */
 DynArray_T NodeD_getFileChildren(NodeD_T oNdNode) {
    assert(oNdNode != NULL);
 
    return oNdNode->oDFileChildren;
 }
 
+/* Returns the dynarray object representing the children of oNdNode that are directories */
 DynArray_T NodeD_getDirChildren(NodeD_T oNdNode) {
    assert(oNdNode != NULL);
 
