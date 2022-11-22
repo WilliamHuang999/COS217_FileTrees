@@ -39,6 +39,7 @@ static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
     assert(oNdParent != NULL);
     assert(oNdChild != NULL);
 
+   /* insert into directory children array at user-given index */
     if(DynArray_addAt(oNdParent->oDDirChildren, ulIndex, oNdChild))
         return SUCCESS;
     else
@@ -52,14 +53,16 @@ static void NodeD_removeFileChildren(NodeD_T oNdNode){
 
    assert(oNdNode != NULL);
 
-   /* Get number of file children initially */
+   /* Get number of file children initially, copy used for safety checks */
    numFileChildren = NodeD_getNumFileChildren(oNdNode);
    numFileChildren2 = NodeD_getNumFileChildren(oNdNode);
    /* Loop thru array of file children and remove/free them */
    while(numFileChildren != 0) {
+      /* free memory and remove from dynarray */
       NodeF_free(DynArray_get(oNdNode->oDFileChildren,0));
       (void)DynArray_removeAt(oNdNode->oDFileChildren,0);
 
+      /* check that a file child was actually removed*/
       numFileChildren2 -= 1;
       numFileChildren = NodeD_getNumFileChildren(oNdNode);
       assert(numFileChildren == numFileChildren2);
@@ -105,7 +108,6 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
    int iStatus;
 
    assert(oPPath != NULL);
-   /* assert(oNdParent != NULL);*/
 
    /* allocate space for a new node */
    psdNew = malloc(sizeof(struct nodeD));
@@ -129,6 +131,7 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
 
       oPParentPath = oNdParent->oPPath;
       ulParentDepth = Path_getDepth(oPParentPath);
+      /* depth of closest directory ancestor, should be difference of 1 (checked later) */
       ulSharedDepth = Path_getSharedPrefixDepth(psdNew->oPPath,
                                                 oPParentPath);
       /* parent must be an ancestor of child */
@@ -165,6 +168,7 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
          return NO_SUCH_PATH;
       }
    }
+   /* parent of root is NULL */
    psdNew->oNdParent = oNdParent;
 
    /* initialize the new node */
@@ -190,12 +194,13 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
 
    *poNdResult = psdNew;
 
-   /* assert(oNdParent == NULL); */
-
    return SUCCESS;
 }
 
 /* ================================================================== */
+/*
+  Links new file child oNfChild into oNdParent's file children array at index ulIndex. Returns SUCCESS if the new directory child was added successfully, or  MEMORY_ERROR if allocation fails adding oNdChild to the directory children array.
+*/
 int NodeD_addFileChild(NodeD_T oNdParent, NodeF_T oNfChild, size_t 
 ulIndex) {
    assert(oNdParent != NULL);
@@ -208,6 +213,11 @@ ulIndex) {
 }
 
 /* ================================================================== */
+/*
+  Destroys and frees all memory allocated for the subtree rooted at
+  oNDNode, i.e., deletes this directory and all its descendents. 
+  Returns the number of directories (exluding files) deleted.
+*/
 size_t NodeD_free(NodeD_T oNdNode) {
    size_t ulIndex;
    size_t ulCount = 0;
@@ -216,10 +226,12 @@ size_t NodeD_free(NodeD_T oNdNode) {
 
    /* remove from parent's list */
    if(oNdNode->oNdParent != NULL) {
+      /* Search for directory in parent's directory children array and sets index in the array */
       if(DynArray_bsearch(
             oNdNode->oNdParent->oDDirChildren,
             oNdNode, &ulIndex,
             (int (*)(const void *, const void *)) NodeD_compare)) {
+               /* Remove in the parent's directory children array at the index found */
                (void) DynArray_removeAt
                (oNdNode->oNdParent->oDDirChildren,
                                   ulIndex);
@@ -231,9 +243,10 @@ size_t NodeD_free(NodeD_T oNdNode) {
       /* Increment counter of directories removed */
       ulCount += NodeD_free(DynArray_get(oNdNode->oDDirChildren, 0));
    }
+   /* free the node's children */
    DynArray_free(oNdNode->oDDirChildren);
 
-   /* Remove file children */
+   /* Removes and frees file children (hence no free after) */
    NodeD_removeFileChildren(oNdNode);
 
    /* remove path */
@@ -246,6 +259,7 @@ size_t NodeD_free(NodeD_T oNdNode) {
 }
 
 /* ================================================================== */
+/* Returns the path object representing oNDNode's absolute path. */
 Path_T NodeD_getPath(NodeD_T oNdNode) {
    assert(oNdNode != NULL);
 
