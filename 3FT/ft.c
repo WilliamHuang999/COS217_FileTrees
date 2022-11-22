@@ -165,6 +165,7 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     /* Checks that the correct path exists */
     iStatus = Path_prefix(oPPath,Path_getDepth(oPPath)-1,&oPParentPath);
     if(iStatus != SUCCESS) {
+        Path_free(oPPath);
         *poNResult = NULL;
         return iStatus;
     }
@@ -181,6 +182,7 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     }
     iStatus = NodeD_getFileChild(oNParent, ulChildID, &oNFound);
     if (iStatus != SUCCESS) {
+        Path_free(oPPath);
         return iStatus;
     }   
 
