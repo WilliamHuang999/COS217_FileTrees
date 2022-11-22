@@ -30,17 +30,20 @@ static NodeD_T oNRoot;
 /* 3. Counter of number of directories (not including files) in FT */
 static size_t ulDirCount;
 
-/* ================================================================== */
+/* --------------------------------------------------------------------
+
+  The FT_traversePath, FT_findFile, and FT_findDir functions modularize the common functionality of going as far as possible down an FT towards a path and returning either the directory of however far was reached (traversePath) or the node if the full path was reached (findDir and findFile).
+*/
+
 /*
   Traverses the FT starting at the root to the farthest possible 
   DIRECTORY following absolute path oPPath. If able to traverse, 
   returns an int SUCCESS status and sets *poNFurthest to the furthest 
-  directory node reached (which may be only a prefix of oPPath, or even 
-  NULL if the root is NULL). Otherwise, sets *poNFurthest to NULL and 
+  directory node reached (which may be only a prefix of oPPath, the entire oPPath, or even NULL if the root is NULL). Otherwise, sets *poNFurthest to NULL and 
   returns with status:
   * CONFLICTING_PATH if the root's path is not a prefix of oPPath
   * MEMORY_ERROR if memory could not be allocated to complete request
-
+ 
   *Credit: Adapted from DT_traversePath() (Christopher Moretti)
 */
 static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
@@ -67,6 +70,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
         return iStatus;
     }
 
+    /* If the root in the given path is not the same as the actual root of the FT */
     if(Path_comparePath(NodeD_getPath(oNRoot), oPPrefix)) {
         Path_free(oPPrefix);
         *poNFurthest = NULL;
@@ -77,7 +81,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
 
     oNCurr = oNRoot;
     ulDepth = Path_getDepth(oPPath);
-    /* Increment over depths until at closest ancestor directory of 
+    /* Increment over depths until at closest ancestor DIRECTORY of 
     last node in the path. If the last node is a directory, it will 
     stop there. */
     for (i = 2; i <= ulDepth; i++) {
@@ -86,6 +90,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
             *poNFurthest = NULL;
             return iStatus;
         }
+        /* If the current node has the next directory as a child */
         if (NodeD_hasDirChild(oNCurr, oPPrefix, &ulChildID)) {
             Path_free(oPPrefix);
             oPPrefix = NULL;
@@ -94,6 +99,7 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
                 *poNFurthest = NULL;
                 return iStatus;
             }
+            /* Set up for next depth */
             oNCurr = oNChild;
         }
         else {
@@ -106,6 +112,16 @@ static int FT_traversePath(Path_T oPPath, NodeD_T *poNFurthest) {
 }
 
 /* ================================================================== */
+/*
+  Traverses the DT to find a file with absolute path pcPath. Returns a int SUCCESS status and sets *poNResult to be the node, if found. Otherwise, sets *poNResult to NULL and returns with status:
+  * INITIALIZATION_ERROR if the DT is not in an initialized state
+  * BAD_PATH if pcPath does not represent a well-formatted path
+  * CONFLICTING_PATH if the root's path is not a prefix of pcPath
+  * NO_SUCH_PATH if no node with pcPath exists in the hierarchy
+  * MEMORY_ERROR if memory could not be allocated to complete request
+
+  * The path pcPath is absolute, it must end in a file to be valid for this function
+ */
 static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     int iStatus;
     Path_T oPPath = NULL;
@@ -117,17 +133,20 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     assert(pcPath != NULL);
     assert(poNResult != NULL);
 
+    /* Confirm that FT is initialized */
     if(!bIsInitialized) {
         *poNResult = NULL;
         return INITIALIZATION_ERROR;
     }
 
+    /* Defensive copy of oPPath */
     iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS) {
         *poNResult = NULL;
         return iStatus;
     }
 
+    /* Find the directory parent of the file (if it exists) */
     iStatus = FT_traversePath(oPPath, &oNParent);
     if(iStatus != SUCCESS)
     {
@@ -136,24 +155,26 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
         return iStatus;
     }
 
+    /* A file cannot have a NULL parent */
     if(oNParent == NULL) {
         Path_free(oPPath);
         *poNResult = NULL;
         return NO_SUCH_PATH;
     }
 
+    /* Checks that the correct path exists */
     iStatus = Path_prefix(oPPath,Path_getDepth(oPPath)-1,&oPParentPath);
     if(iStatus != SUCCESS) {
         *poNResult = NULL;
         return iStatus;
     }
-
     if(Path_comparePath(NodeD_getPath(oNParent), oPParentPath) != 0) {
         Path_free(oPPath);
         *poNResult = NULL;
         return NO_SUCH_PATH;
     }
 
+    /* If the parent has the file as a child, set it to oNFound */
     if (!NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
         Path_free(oPPath);
         return NO_SUCH_PATH;
@@ -171,6 +192,16 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
 }
 
 /* ================================================================== */
+/*
+  Traverses the DT to find a directory with absolute path pcPath. Returns a int SUCCESS status and sets *poNResult to be the node, if found. Otherwise, sets *poNResult to NULL and returns with status:
+  * INITIALIZATION_ERROR if the DT is not in an initialized state
+  * BAD_PATH if pcPath does not represent a well-formatted path
+  * CONFLICTING_PATH if the root's path is not a prefix of pcPath
+  * NO_SUCH_PATH if no node with pcPath exists in the hierarchy
+  * MEMORY_ERROR if memory could not be allocated to complete request
+
+  * The path pcPath is absolute, it must end in a directory to be valid for this function. This function is essentially a safer, more specialized version of traverse path (more checks).
+ */
 static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     Path_T oPPath = NULL;
     NodeD_T oNFound = NULL;
@@ -180,17 +211,20 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     assert(pcPath != NULL);
     assert(poNResult != NULL);
 
+    /* Confirm that FT is initialized */
     if(!bIsInitialized) {
         *poNResult = NULL;
         return INITIALIZATION_ERROR;
     }
 
+    /* Defensive copy of oPPath */
     iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS) {
         *poNResult = NULL;
         return iStatus;
     }
 
+    /* Find the directory parent of the file (if it exists) */
     iStatus = FT_traversePath(oPPath, &oNFound);
     if(iStatus != SUCCESS)
     {
@@ -199,17 +233,20 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
         return iStatus;
     }
 
+    /* Directory cannot be NULL, it won't be NULL even if it is the root */
     if(oNFound == NULL) {
         Path_free(oPPath);
         *poNResult = NULL;
         return NO_SUCH_PATH;
     }
 
+    /* Checks that the node being searched for is NOT a file */
     iStatus = FT_findFile(pcPath,&oNFile);
     if (iStatus == SUCCESS) {
         return NOT_A_DIRECTORY;
     }
 
+    /* Checks that found correct path */
     if(Path_comparePath(NodeD_getPath(oNFound), oPPath) != 0) {
         Path_free(oPPath);
         *poNResult = NULL;
@@ -341,6 +378,7 @@ boolean FT_containsDir(const char *pcPath) {
 
     assert(pcPath != NULL);
 
+    /* iStatus becomes SUCCESS if the directory is found, therefore is contained in the FT */
     iStatus = FT_findDir(pcPath, &oNFound);
     return (boolean) (iStatus == SUCCESS);
 }
