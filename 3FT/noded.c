@@ -46,7 +46,7 @@ static int NodeD_addDirChild(NodeD_T oNdParent, NodeD_T oNdChild,
         return MEMORY_ERROR;
 }
 
-/* Removes and frees all file children from oNdNode. */
+/* Removes and frees all file children from oNdNode. Returns nothing. */
 static void NodeD_removeFileChildren(NodeD_T oNdNode){
    size_t numFileChildren;
    size_t numFileChildren2;
