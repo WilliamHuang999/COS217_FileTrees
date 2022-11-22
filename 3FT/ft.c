@@ -139,7 +139,7 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
         return INITIALIZATION_ERROR;
     }
 
-    /* Defensive copy of oPPath */
+    /* validate pcPath and generate a Path_T for it */
     iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS) {
         *poNResult = NULL;
@@ -217,7 +217,7 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
         return INITIALIZATION_ERROR;
     }
 
-    /* Defensive copy of oPPath */
+    /* validate pcPath and generate a Path_T for it */
     iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS) {
         *poNResult = NULL;
@@ -407,10 +407,12 @@ int FT_rmDir(const char *pcPath) {
         return NOT_A_DIRECTORY;
     }*/
 
+    /* Locate the directory and set it to oNdFound */
     iStatus = FT_findDir(pcPath, &oNdFound);
     if(iStatus != SUCCESS)
         return iStatus;
 
+    /* Free the directory (including its children) */
     ulDirCount -= NodeD_free(oNdFound);
     if(ulDirCount == 0)
         oNRoot = NULL;
@@ -442,10 +444,10 @@ ulLength) {
     size_t ulDepth, ulIndex, ulChildID;
     size_t ulNewNodes = 0; 
 
-    /* validate pcPath and generate a Path_T for it */
     if(!bIsInitialized)
         return INITIALIZATION_ERROR;
     
+    /* validate pcPath and generate a Path_T for it */
     iStatus = Path_new(pcPath, &oPPath);
     if(iStatus != SUCCESS)
         return iStatus;
