@@ -433,6 +433,8 @@ int FT_rmDir(const char *pcPath) {
    * NOT_A_DIRECTORY if a proper prefix of pcPath exists as a file
    * ALREADY_IN_TREE if pcPath is already in the FT (as dir or file)
    * MEMORY_ERROR if memory could not be allocated to complete request
+
+   *Note: this function follows the same structure as insertDir with an extra step after to add the file as a leaf. 
 */
 int FT_insertFile(const char *pcPath, void *pvContents, size_t 
 ulLength) {
@@ -531,6 +533,7 @@ ulLength) {
         ulIndex++;
     }
     
+    /* generate a new node with only initialized fields */
     iStatus = NodeF_new(oPPath, &oNNewFile);
     if(iStatus != SUCCESS) {
         Path_free(oPPath);
@@ -538,8 +541,8 @@ ulLength) {
             (void) NodeD_free(oNFirstNew);
         return iStatus;
     }
-    /* MAY NEED TO FREE MEMORY HERE!!! FREE(oNNewFile).*/
-    /* ALSO MAYBE PUT THIS ALREADY_IN_TREE STUFF AT THE BEGINNING */
+    
+    /* Check if the file is already in the tree as a child of the parent directory, if not add it as a child of the parent directory. ulChildID is generated from NodeD_hasFileChild() */
     if (NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
         Path_free(oPPath);
         free(oNNewFile);
@@ -553,6 +556,7 @@ ulLength) {
         return iStatus; 
     }
     
+    /* Set the fields of the new node */
     (void)NodeF_replaceContents(oNNewFile,pvContents);
     (void)(NodeF_replaceLength(oNNewFile,ulLength));
 
@@ -560,6 +564,7 @@ ulLength) {
     /* update DT state variables to reflect insertion */
     if(oNRoot == NULL)
         oNRoot = oNFirstNew;
+    /* Update the number of directories (not files, those are not counted) */
     ulDirCount += ulNewNodes;
 
     return SUCCESS;
@@ -576,6 +581,7 @@ boolean FT_containsFile(const char *pcPath) {
 
     assert(pcPath != NULL);
 
+    /* iStatus == SUCCESS if file can be found */
     iStatus = FT_findFile(pcPath, &oNFound);
     return (boolean) (iStatus == SUCCESS);
 }
