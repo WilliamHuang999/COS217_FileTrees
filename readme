@@ -197,6 +197,45 @@ your disagreements with them? Copy the critTer warnings here, and
 express your disagreement after each warning. If there are no
 warnings, then write "None."
 
+noded.c: line 407: low priority:
+   A file should contain no more than 15 functions;
+   this file contains 18 functions
+
+ft.c: line 791: low priority:
+   A file should contain no more than 15 functions;
+   this file contains 18 functions
+
+^^Regarding the two above: All of the functions were used in our 
+modules. In order to maintain understandability and flexibility of the 
+code, we think it is acceptable to be three functions over the limit. 
+
+ft.c: line 418: medium priority:
+   Do you want to validate 'pvContents' through an assert?
+
+ft.c: line 616: medium priority:
+   Do you want to validate 'pvNewContents' through an assert?
+
+ft.c: line 632: medium priority:
+   Do you want to validate 'pbIsFile' through an assert?
+
+ft.c: line 632: medium priority:
+   Do you want to validate 'pulSize' through an assert?
+
+^^Regarding the four above: These arguments should not be asserted as 
+the design and definition of their function is meant to allow NULL 
+values to be assigned to them. File contents can be null and FT_stat 
+defines the ability of the function to return pbIsFile and pulSize 
+unchanged in some scenarios. Thus, if they were passed to the function 
+as NULL, there are some cases where they should stay that way. 
+
+ft.c: line 790: low priority:
+   A source code file should contain fewer than 500 lines;
+   this file contains 791 lines
+
+^^Regarding the one above: Similarly to the first two, this is necessary 
+for maintaining the readability, understandibility, and flexibility of 
+our modules. Many of the lines are comments that help the user 
+understand what each function is doing.
 
 
 ------------------------------------------------------------------------
