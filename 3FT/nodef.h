@@ -54,12 +54,18 @@ int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond);
 */
 char *NodeF_toString(NodeF_T oNfNode);
 
+/* Gets and returns the contents of file node oNfNode. */
 void *NodeF_getContents(NodeF_T oNfNode);
 
+/* Gets and returns the length of the contents of oNfNode */
 size_t NodeF_getLength(NodeF_T oNfNode);
 
+/* Replaces the current contents of oNfNode with new contents
+  pvNewContents. Returns the old contents. */
 void *NodeF_replaceContents(NodeF_T oNfNode, void* pvNewContents);
 
+/* Replaces the current length with new length ulNewLength.
+  Returns the old length. */
 size_t NodeF_replaceLength(NodeF_T oNfNode, size_t ulNewLength);
 
 #endif
