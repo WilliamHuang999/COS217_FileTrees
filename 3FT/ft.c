@@ -248,6 +248,7 @@ static int FT_findDir(const char *pcPath, NodeD_T *poNResult) {
     /* Checks that the node being searched for is NOT a file */
     iStatus = FT_findFile(pcPath,&oNFile);
     if (iStatus == SUCCESS) {
+        Path_free(oPPath);
         return NOT_A_DIRECTORY;
     }
 
