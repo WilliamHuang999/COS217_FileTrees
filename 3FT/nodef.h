@@ -15,8 +15,9 @@
 typedef struct nodeF *NodeF_T;
 
 /*
-  Creates a new file node in File Tree, with path oPPath. Returns an int SUCCESS status and sets *poNFResult to be the new node
-  if successful. Otherwise, sets *poNFResult to NULL and returns status:
+  Creates a new file node in File Tree, with path oPPath. Returns an 
+  int SUCCESS status and sets *poNfResult to be the new node
+  if successful. Otherwise, sets *poNfResult to NULL and returns status:
   * MEMORY_ERROR if memory could not be allocated to complete request
   * NO_SUCH_PATH if oPPath is of depth 0 or 1 (root cannot be a file)
 */
@@ -28,13 +29,13 @@ int NodeF_new(Path_T oPPath, NodeF_T *poNfResult);
 */
 void NodeF_free(NodeF_T oNfNode);
 
-/* Returns the path object representing oNFNode's absolute path. */
+/* Returns the path object representing oNfNode's absolute path. */
 Path_T NodeF_getPath(NodeF_T oNfNode);
 
 /*
-  Compares oNFNode1 and oNFNode2 lexicographically based on their paths.
-  Returns <0, 0, or >0 if oNFNode1 is "less than", "equal to", or
-  "greater than" oNFNode2, respectively.
+  Compares oNfNode1 and oNfNode2 lexicographically based on their paths.
+  Returns <0, 0, or >0 if oNfNode1 is "less than", "equal to", or
+  "greater than" oNfNode2, respectively.
 */
 int NodeF_compare(NodeF_T oNfNode1, NodeF_T oNfNode2);
 
@@ -46,7 +47,7 @@ int NodeF_compare(NodeF_T oNfNode1, NodeF_T oNfNode2);
 int NodeF_compareString(const NodeF_T oNfNode1, const char *pcSecond);
 
 /*
-  Returns a string representation for oNFNode, or NULL if
+  Returns a string representation for oNfNode, or NULL if
   there is an allocation error.
 
   Allocates memory for the returned string, which is then owned by

@@ -27,6 +27,7 @@ int NodeF_new(Path_T oPPath, NodeF_T *poNfResult) {
    int iStatus;
 
    assert(oPPath != NULL);
+   assert(poNfResult != NULL);
 
    /* Path of file cannot be 0 or 1 */
    if (!(Path_getDepth(oPPath) > 1)) {
