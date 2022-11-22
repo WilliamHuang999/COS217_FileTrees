@@ -624,12 +624,13 @@ int FT_rmFile(const char *pcPath) {
     if (iStatus != SUCCESS) {
         return iStatus;
     }
+    /* Sets right ulIndex */
     (void)NodeD_hasFileChild(oNdParent, NodeF_getPath(oNFound),
     &ulIndex);
 
     /* Remove and free the file node */
     NodeF_free(oNFound);
-    (void)DynArray_removeAt(NodeD_getFileChildren(oNdParent),ulIndex);
+    (void)DynArray_removeAt(NodeD_getFileChildren(oNdParent), ulIndex);
 
     return SUCCESS;
 }
@@ -648,6 +649,7 @@ void *FT_getFileContents(const char *pcPath) {
 
     assert(pcPath != NULL);
 
+    /* Find the file and set to oNFound so contents can be accessed */
     iStatus = FT_findFile(pcPath, &oNFound);
     if(iStatus != SUCCESS)
         return NULL;
