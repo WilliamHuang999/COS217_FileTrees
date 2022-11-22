@@ -170,6 +170,7 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
         return iStatus;
     }
     if(Path_comparePath(NodeD_getPath(oNParent), oPParentPath) != 0) {
+        Path_free(oPParentPath);
         Path_free(oPPath);
         *poNResult = NULL;
         return NO_SUCH_PATH;
@@ -178,10 +179,12 @@ static int FT_findFile(const char *pcPath, NodeF_T *poNResult) {
     /* If the parent has the file as a child, set it to oNFound */
     if (!NodeD_hasFileChild(oNParent, oPPath, &ulChildID)) {
         Path_free(oPPath);
+        Path_free(oPParentPath);
         return NO_SUCH_PATH;
     }
     iStatus = NodeD_getFileChild(oNParent, ulChildID, &oNFound);
     if (iStatus != SUCCESS) {
+        Path_free(oPParentPath);
         Path_free(oPPath);
         return iStatus;
     }   
