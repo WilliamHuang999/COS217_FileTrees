@@ -452,8 +452,10 @@ ulLength) {
     if(iStatus != SUCCESS)
         return iStatus;
     
-    if(Path_getDepth(oPPath) == 1)
+    if(Path_getDepth(oPPath) == 1) {
+        Path_free(oPPath);
         return CONFLICTING_PATH;
+    }
     
     /* find the closest directory ancestor of oPPath already in the 
     tree, ancestor must be a directory by definition of file tree */
