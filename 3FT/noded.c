@@ -99,6 +99,8 @@ int NodeD_new(Path_T oPPath, NodeD_T oNdParent, NodeD_T *poNdResult) {
    assert(oPPath != NULL);
    assert(poNdResult != NULL);
 
+   ulIndex = 0;
+
    /* allocate space for a new node */
    psdNew = malloc(sizeof(struct nodeD));
    if(psdNew == NULL) {
@@ -203,9 +205,12 @@ ulIndex) {
 /* ================================================================== */
 size_t NodeD_free(NodeD_T oNdNode) {
    size_t ulIndex;
-   size_t ulCount = 0;
+   size_t ulCount;
 
    assert(oNdNode != NULL);
+
+   size_t ulIndex = 0;
+   size_t ulCount = 0;
 
    /* remove from parent's list */
    if(oNdNode->oNdParent != NULL) {
