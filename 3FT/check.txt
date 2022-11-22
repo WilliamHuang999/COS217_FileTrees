@@ -1,0 +1,76 @@
+Checkpoint 1:
+1root
+1root/2third
+1root/2child
+1root/2child/3gkid
+1root/2ok
+1root/2ok/3yes
+1root/2ok/3yes/4indeed
+1root/2second
+1root/2second/3gfile
+
+Checkpoint 2:
+1root
+1root/2third
+1root/2child
+1root/2child/2child
+1root/2child/2child/2child
+1root/2child/2child/2child/2child
+1root/2child/3gk2
+1root/2child/3gk2/4ggk
+1root/2child/3gkid
+1root/2ok
+1root/2ok/3yes
+1root/2ok/3yes/4indeed
+1root/2second
+1root/2second/3gfile
+
+Checkpoint 3:
+1root
+1root/2third
+1root/2child
+1root/2child/3gk2
+1root/2child/3gk2/4ggk
+1root/2ok
+1root/2ok/3yes
+1root/2ok/3yes/4indeed
+1root/2second
+
+Checkpoint 4.1:
+1root
+1root/y
+
+Checkpoint 4.2:
+1root
+1root/x
+1root/y
+
+Checkpoint 4.3:
+1root
+1root/x
+1root/x/C
+1root/x/c++
+1root/y
+
+Checkpoint 4.4:
+1root
+1root/x
+1root/x/B
+1root/x/C
+1root/x/c++
+1root/y
+
+Checkpoint 4.5:
+1root
+1root/x
+1root/x/B
+1root/x/C
+1root/x/c++
+1root/y
+1root/y/CHILD1FILE
+1root/y/CHILD2FILE
+1root/y/CHILD1DIR
+1root/y/CHILD2DIR
+1root/y/CHILD2DIR/CHILD4DIR
+1root/y/CHILD3DIR
+
