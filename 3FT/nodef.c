@@ -80,7 +80,7 @@ Path_T NodeF_getPath(NodeF_T oNfNode) {
 int NodeF_compare(NodeF_T oNfNode1, NodeF_T oNfNode2) {
    assert(oNfNode1 != NULL);
    assert(oNfNode2 != NULL);
-
+   /* Compare paths of the nodes */
    return Path_comparePath(oNfNode1->oPPath, oNfNode2->oPPath);
 }
 
@@ -109,8 +109,9 @@ size_t NodeF_getLength(NodeF_T oNfNode) {
 void *NodeF_replaceContents(NodeF_T oNfNode, void* pvNewContents) {
    void *pvOldContents;
    assert(oNfNode != NULL);
-
+   /* Record the old contents */
    pvOldContents = oNfNode->pvContents;
+   /* Set the new contents */
    oNfNode->pvContents = pvNewContents;
    return pvOldContents;
 }
@@ -120,7 +121,9 @@ size_t NodeF_replaceLength(NodeF_T oNfNode, size_t ulNewLength) {
    size_t ulOldLength;
    assert(oNfNode != NULL);
 
+   /* Record the old length */
    ulOldLength = oNfNode->ulLength;
+   /* Set the new length */
    oNfNode->ulLength = ulNewLength;
    return ulOldLength;
 }
